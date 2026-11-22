@@ -21,3 +21,9 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 - **Delegated to AI:** modules (`network`, `ecr`, `rds`, `sqs`, `ecs_service`, `monitoring`, `oidc`), `bootstrap` and `demo` stacks, `verify-teardown.ps1`, `kill-timer.ps1`.
 - **Reviewed:** plan lists 36 resources and none of the banned types; secrets only via Secrets Manager `valueFrom`; state bucket name is passed at init so no account id is committed.
 - **Went wrong:** an org SCP explicitly denies `ec2:DescribeAvailabilityZones` and `elasticloadbalancing:Describe*` for `sentinel-deployer`. AZ names are now a variable. The ELB denial also breaks `verify-teardown.ps1` and probably ALB management itself; not worked around, escalated to the user.
+
+## Region correction (ap-southeast-1 to ap-southeast-2)
+- **What went wrong:** the first drafts of `CLAUDE.md`/`SPEC.md` named `ap-southeast-1`, but the AWS-managed SCPs on this account only allow workload services in `ap-southeast-2`. Everything was built against the wrong region.
+- **How it was found:** `terraform plan` failed with an explicit SCP deny on `ec2:DescribeAvailabilityZones`, and `verify-teardown.ps1` got the same deny on `elasticloadbalancing:Describe*`. The AI wrongly guessed the ALB itself might be blocked and asked the user; the user identified the real cause (region).
+- **Fix:** region and AZ defaults changed to `ap-southeast-2` / `2a`, `2b` everywhere. `scripts/preflight.ps1` now makes one read-only call per service Terraform needs (15 of 15 pass in `ap-southeast-2`). Lesson: run the preflight before writing infrastructure, and treat an SCP deny as a signal to re-check region before assuming a service ban.
+- **Also verified:** `kill-timer.ps1` fired on schedule in a 2-minute dummy run (destroy failed harmlessly because no backend was initialised, then the teardown check ran clean).
