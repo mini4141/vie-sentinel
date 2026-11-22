@@ -7,7 +7,7 @@ param([int]$Minutes = 90)
 $repo = Split-Path -Parent $PSScriptRoot
 $demo = Join-Path $repo 'infra\demo'
 $log = Join-Path $repo 'docs\proof\kill-timer-destroy.log'
-$cmd = "`$env:AWS_PROFILE='sentinel'; `$env:AWS_REGION='ap-southeast-1'; Set-Location '$demo'; " +
+$cmd = "`$env:AWS_PROFILE='sentinel'; `$env:AWS_REGION='ap-southeast-2'; Set-Location '$demo'; " +
        "terraform destroy -auto-approve -input=false -no-color *> '$log'; " +
        "& '$repo\scripts\verify-teardown.ps1' *>> '$log'"
 

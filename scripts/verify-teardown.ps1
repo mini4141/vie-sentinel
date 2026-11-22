@@ -1,8 +1,8 @@
-# Verifies that nothing billable from the demo stack is left in ap-southeast-1.
+# Verifies that nothing billable from the demo stack is left in ap-southeast-2.
 # Usage: pwsh scripts/verify-teardown.ps1   (exit 0 = clean, exit 1 = leftovers)
 $ErrorActionPreference = 'Continue'
-$Profile = 'sentinel'
-$Region = 'ap-southeast-1'
+$AwsProfile = 'sentinel'
+$Region = 'ap-southeast-2'
 $leftovers = 0
 
 function Check($name, [scriptblock]$query) {
@@ -21,10 +21,10 @@ function Check($name, [scriptblock]$query) {
     }
 }
 
-$ident = aws sts get-caller-identity --profile $Profile --query Arn --output text
+$ident = aws sts get-caller-identity --profile $AwsProfile --query Arn --output text
 Write-Host "verify-teardown $(Get-Date -Format u) region=$Region identity=$($ident -replace ':\d{12}:', ':<account-id>:')"
 
-$common = @('--profile', $Profile, '--region', $Region, '--output', 'text')
+$common = @('--profile', $AwsProfile, '--region', $Region, '--output', 'text')
 Check 'load balancers'      { aws elbv2 describe-load-balancers @common --query 'LoadBalancers[].LoadBalancerName' }
 Check 'target groups'       { aws elbv2 describe-target-groups @common --query 'TargetGroups[].TargetGroupName' }
 Check 'RDS instances'       { aws rds describe-db-instances @common --query 'DBInstances[].DBInstanceIdentifier' }

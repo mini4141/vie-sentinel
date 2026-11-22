@@ -16,7 +16,7 @@ terraform {
   # The profile comes from AWS_PROFILE locally and from OIDC credentials in CI.
   backend "s3" {
     key            = "demo/terraform.tfstate"
-    region         = "ap-southeast-1"
+    region         = "ap-southeast-2"
     dynamodb_table = "sentinel-tf-locks"
     encrypt        = true
   }
@@ -24,7 +24,7 @@ terraform {
 
 variable "region" {
   type    = string
-  default = "ap-southeast-1"
+  default = "ap-southeast-2"
 }
 variable "image_tag" {
   type    = string

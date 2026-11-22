@@ -17,7 +17,7 @@ services:
     image: localstack/localstack:4.4
     environment:
       SERVICES: sqs
-      AWS_DEFAULT_REGION: ap-southeast-1
+      AWS_DEFAULT_REGION: ap-southeast-2
     ports:
       - "4566:4566"
     volumes:
@@ -40,7 +40,7 @@ services:
       SPRING_DATASOURCE_USERNAME: sentinel
       SPRING_DATASOURCE_PASSWORD: sentinel
       SENTINEL_API_KEY: ${API_KEY:-dev-api-key}
-      AWS_REGION: ap-southeast-1
+      AWS_REGION: ap-southeast-2
       # same code path as AWS: only endpoint + dummy credentials differ
       SPRING_CLOUD_AWS_SQS_ENDPOINT: http://localstack:4566
       SPRING_CLOUD_AWS_CREDENTIALS_ACCESS_KEY: test

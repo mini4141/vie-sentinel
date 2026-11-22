@@ -3,10 +3,10 @@ variable "cidr" {
   type    = string
   default = "10.0.0.0/16"
 }
-# Explicit AZ names: the sentinel-deployer user is denied ec2:DescribeAvailabilityZones by an org SCP.
+# Explicit AZ names (avoids an ec2:DescribeAvailabilityZones call; matches the project region).
 variable "availability_zones" {
   type    = list(string)
-  default = ["ap-southeast-1a", "ap-southeast-1b"]
+  default = ["ap-southeast-2a", "ap-southeast-2b"]
 }
 
 locals {

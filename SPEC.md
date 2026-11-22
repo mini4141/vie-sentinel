@@ -111,7 +111,7 @@ These are starting points chosen for a cheap, short-lived demo (about $0.11 per 
 - Postgres: `postgres:16`. LocalStack: current `localstack/localstack` image with only `SERVICES=sqs`.
 - JVM flags: `-XX:MaxRAMPercentage=75 -XX:+UseSerialGC` (small containers). Spring Boot 3.x, Spring Cloud AWS 3.x for SQS.
 
-**AWS (region `ap-southeast-1`)**
+**AWS (region `ap-southeast-2`)**
 
 | Component | Recommended default | Notes and fallback |
 |---|---|---|

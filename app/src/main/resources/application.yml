@@ -13,7 +13,7 @@ spring:
   cloud:
     aws:
       region:
-        static: ${AWS_REGION:ap-southeast-1}
+        static: ${AWS_REGION:ap-southeast-2}
 
 server:
   shutdown: graceful
