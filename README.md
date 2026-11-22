@@ -79,9 +79,9 @@ Details and failure handling: [runbook](docs/runbook.md). Decisions: [ADR 0001 S
 
 There is no laptop kill timer here: per-job `timeout-minutes` (about 65 minutes in total) and the always-destroy job replace it. A concurrency group allows one deploy at a time. `destroy.yml` is the manual emergency teardown (same destroy and teardown check).
 
-Repository variables to set (Settings, Secrets and variables, Actions, Variables):
+Repository **secrets** to set (Settings, Secrets and variables, Actions, Secrets). They are secrets, not variables, so GitHub masks them in the public workflow logs; the role ARNs and the state bucket name contain the AWS account ID:
 
-| Variable | Used by | Value |
+| Secret | Used by | Value |
 |---|---|---|
 | `TF_STATE_BUCKET` | plan, deploy, destroy | the state bucket name from the bootstrap output `state_bucket` |
 | `AWS_PLAN_ROLE_ARN` | `terraform-plan.yml` | the bootstrap output `plan_role_arn` |

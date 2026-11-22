@@ -1,10 +1,15 @@
 name: teardown
 
 # Reusable: terraform destroy on infra/demo, then the teardown check. Called by deploy.yml and destroy.yml.
-# Variables needed: TF_STATE_BUCKET, AWS_DEPLOY_ROLE_ARN.
+# Secrets needed (passed with `secrets: inherit`): TF_STATE_BUCKET, AWS_DEPLOY_ROLE_ARN.
 
 on:
   workflow_call:
+    secrets:
+      AWS_DEPLOY_ROLE_ARN:
+        required: true
+      TF_STATE_BUCKET:
+        required: true
 
 permissions:
   id-token: write
@@ -26,12 +31,12 @@ jobs:
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Init
         working-directory: infra/demo
-        run: terraform init -input=false -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}"
+        run: terraform init -input=false -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
 
       - name: Destroy
         working-directory: infra/demo

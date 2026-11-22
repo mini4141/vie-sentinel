@@ -26,7 +26,7 @@ Confirm the account ends in `2410` and the user is `sentinel-deployer`. If not, 
 
 ## Deploy through GitHub Actions (CD)
 
-Run `deploy` (Actions tab, Run workflow, branch `main`). It builds and pushes the image, applies `infra/demo`, runs the smoke test, then always destroys and runs the teardown check, so no kill timer is needed. Set the repository variables listed in the README first. If a run is cancelled or hangs, run `destroy` from `main`; if Terraform reports a held state lock, wait for the other run to finish, or `terraform force-unlock <id>` from a laptop after confirming nothing else is running. A red teardown check means resources are left: delete them and re-run `destroy`.
+Run `deploy` (Actions tab, Run workflow, branch `main`). It builds and pushes the image, applies `infra/demo`, runs the smoke test, then always destroys and runs the teardown check, so no kill timer is needed. Set the repository secrets listed in the README first. If a run is cancelled or hangs, run `destroy` from `main`; if Terraform reports a held state lock, wait for the other run to finish, or `terraform force-unlock <id>` from a laptop after confirming nothing else is running. A red teardown check means resources are left: delete them and re-run `destroy`.
 
 ## Rollback
 

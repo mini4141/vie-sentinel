@@ -2,7 +2,7 @@ name: deploy
 
 # Manual deploy of the ephemeral demo stack: build image, terraform apply, smoke test, ALWAYS destroy.
 # Run it from main only (the deploy role trusts only repo ... ref:refs/heads/main via OIDC).
-# Repository variables needed: TF_STATE_BUCKET, AWS_DEPLOY_ROLE_ARN.
+# Repository secrets needed: TF_STATE_BUCKET, AWS_DEPLOY_ROLE_ARN.
 # The always-destroy job and the job timeouts replace the laptop kill timer.
 
 on:
@@ -33,7 +33,7 @@ jobs:
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Log in to ECR
@@ -68,12 +68,12 @@ jobs:
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Init
         working-directory: infra/demo
-        run: terraform init -input=false -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}"
+        run: terraform init -input=false -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
 
       - name: Apply
         working-directory: infra/demo
@@ -113,7 +113,7 @@ jobs:
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Fetch API key (masked)
@@ -165,3 +165,4 @@ jobs:
     if: always() && github.ref == 'refs/heads/main'
     needs: [build, deploy, smoke]
     uses: ./.github/workflows/_teardown.yml
+    secrets: inherit
