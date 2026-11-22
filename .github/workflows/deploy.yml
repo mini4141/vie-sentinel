@@ -1,0 +1,168 @@
+name: deploy
+
+# Manual deploy of the ephemeral demo stack: build image, terraform apply, smoke test, ALWAYS destroy.
+# Run it from main only (the deploy role trusts only repo ... ref:refs/heads/main via OIDC).
+# Repository secrets needed: TF_STATE_BUCKET, AWS_DEPLOY_ROLE_ARN.
+# The always-destroy job and the job timeouts replace the laptop kill timer.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+# One deploy at a time; a second run waits instead of cancelling a running one.
+concurrency:
+  group: sentinel-demo-deploy
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ap-southeast-2
+  ECR_REPOSITORY: sentinel-app
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Image tag is the commit SHA
+        id: meta
+        run: echo "tag=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          IMAGE="$REGISTRY/$ECR_REPOSITORY:$TAG"
+          docker build --platform linux/amd64 -t "$IMAGE" app
+          docker push "$IMAGE"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      alb_dns: ${{ steps.out.outputs.alb_dns }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Init
+        working-directory: infra/demo
+        run: terraform init -input=false -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+
+      - name: Apply
+        working-directory: infra/demo
+        run: |
+          terraform apply -auto-approve -input=false -no-color -lock-timeout=300s \
+            -var "image_tag=${{ needs.build.outputs.image_tag }}" 2>&1 | tee apply.log
+
+      - name: Read outputs
+        id: out
+        working-directory: infra/demo
+        run: echo "alb_dns=$(terraform output -raw alb_dns_name)" >> "$GITHUB_OUTPUT"
+
+      - name: Sanitize apply log
+        if: always()
+        run: |
+          ACC=$(aws sts get-caller-identity --query Account --output text 2>/dev/null || true)
+          mkdir -p proof
+          if [ -f infra/demo/apply.log ]; then
+            grep -vE 'Still creating|Refreshing|Reading\.\.\.|Read complete' infra/demo/apply.log \
+              | sed "s/${ACC:-no-account}/<account-id>/g" > proof/terraform-apply.txt
+          fi
+
+      - name: Upload apply log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apply-proof
+          path: proof/
+          if-no-files-found: ignore
+
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Fetch API key (masked)
+        run: |
+          KEY=$(aws secretsmanager get-secret-value --secret-id sentinel/api-key --query SecretString --output text)
+          echo "::add-mask::$KEY"
+          echo "API_KEY=$KEY" >> "$GITHUB_ENV"
+
+      - name: Wait for ALB health
+        env:
+          ALB: ${{ needs.deploy.outputs.alb_dns }}
+        run: |
+          for i in $(seq 1 54); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -m 5 "http://$ALB/actuator/health" || true)
+            echo "attempt $i: HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 10
+          done
+          echo "::error::ALB health check did not return 200 within 9 minutes"
+          exit 1
+
+      - name: Smoke test
+        env:
+          ALB: ${{ needs.deploy.outputs.alb_dns }}
+        run: |
+          mkdir -p proof
+          set +e
+          { echo "BASE_URL=http://$ALB"; scripts/smoke-test.sh "http://$ALB"; } 2>&1 | tee proof/smoke-test-aws.txt
+          rc=${PIPESTATUS[0]}
+          {
+            echo "### Smoke test against AWS"
+            echo "URL: http://$ALB"
+            echo '```'
+            cat proof/smoke-test-aws.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$rc"
+
+      - name: Upload proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-proof
+          path: proof/
+          if-no-files-found: ignore
+
+  # Always runs, even if build, deploy or smoke failed or were cancelled, then verifies nothing is left.
+  destroy:
+    if: always() && github.ref == 'refs/heads/main'
+    needs: [build, deploy, smoke]
+    uses: ./.github/workflows/_teardown.yml
+    secrets: inherit

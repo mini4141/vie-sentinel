@@ -1,0 +1,75 @@
+name: teardown
+
+# Reusable: terraform destroy on infra/demo, then the teardown check. Called by deploy.yml and destroy.yml.
+# Secrets needed (passed with `secrets: inherit`): TF_STATE_BUCKET, AWS_DEPLOY_ROLE_ARN.
+
+on:
+  workflow_call:
+    secrets:
+      AWS_DEPLOY_ROLE_ARN:
+        required: true
+      TF_STATE_BUCKET:
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-southeast-2
+
+jobs:
+  teardown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Init
+        working-directory: infra/demo
+        run: terraform init -input=false -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+
+      - name: Destroy
+        working-directory: infra/demo
+        run: terraform destroy -auto-approve -input=false -no-color -lock-timeout=300s 2>&1 | tee destroy.log
+
+      - name: Teardown check
+        if: always()
+        run: |
+          mkdir -p proof
+          set +e
+          scripts/verify-teardown.sh 2>&1 | tee proof/verify-teardown.txt
+          rc=${PIPESTATUS[0]}
+          {
+            echo "### Teardown check"
+            echo '```'
+            cat proof/verify-teardown.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$rc"
+
+      - name: Sanitize logs
+        if: always()
+        run: |
+          ACC=$(aws sts get-caller-identity --query Account --output text 2>/dev/null || true)
+          mkdir -p proof
+          if [ -f infra/demo/destroy.log ]; then
+            grep -vE 'Still destroying|Refreshing' infra/demo/destroy.log | sed "s/${ACC:-no-account}/<account-id>/g" > proof/terraform-destroy.txt
+          fi
+
+      - name: Upload teardown proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: teardown-proof
+          path: proof/
+          if-no-files-found: ignore

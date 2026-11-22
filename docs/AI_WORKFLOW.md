@@ -48,3 +48,13 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 - **What went wrong:** `verify-teardown.ps1` and `preflight.ps1` printed `Get-Date -Format u`, which formats local time but appends a `Z`. The laptop is at UTC+7, so `docs/proof/verify-teardown.txt` said `12:50:02Z` when the real UTC time was `05:50:02Z`.
 - **How it was found:** a docs audit compared it with the smoke test (`date -u`, 05:42Z) and the destroy completing at 05:49:52Z.
 - **Fix:** both scripts now call `.ToUniversalTime()` first, and the one header line in the proof file was corrected to `05:50:02Z`. The other proof files already used real UTC. `kill-timer.ps1` prints local time and now says so.
+
+## Phase 6: CD workflows
+- **Delegated to AI:** `deploy.yml` (build, deploy, smoke, always-destroy), `destroy.yml`, a reusable `_teardown.yml`, and `scripts/verify-teardown.sh` (a bash port of the PowerShell teardown check using real UTC).
+- **Reviewed:** the deploy role's IAM policy was checked statically against everything `infra/demo` creates and destroys and against the teardown check's read calls. Nothing was found missing; it has not been exercised, because the workflows have not run.
+- **Status:** written and linted with actionlint only. No AWS call was made. Not yet run.
+
+### Follow-up: ARNs and bucket moved from variables to secrets
+- **What was wrong:** the workflows read the role ARNs and the state bucket name from repository *variables*. Variables are not masked, and `role-to-assume` is printed in the log of every step, so on this public repo the account ID was readable in the logs of the plan runs.
+- **Fix:** `TF_STATE_BUCKET`, `AWS_PLAN_ROLE_ARN` and `AWS_DEPLOY_ROLE_ARN` are now repository secrets (masked in logs), passed to the reusable teardown workflow with `secrets: inherit`. The old variables were deleted.
+- **Remaining exposure:** plan runs made before this change (including PRs #1 and #2) still show the ARN in their logs. The account ID is not a credential, but it is visible there; delete those runs if that matters.

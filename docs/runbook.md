@@ -24,6 +24,10 @@ Confirm the account ends in `2410` and the user is `sentinel-deployer`. If not, 
 4. Wait for `http://<alb-dns>/actuator/health` to return 200 (about a minute after apply).
 5. Run `scripts/smoke-test.sh http://<alb-dns>` with `API_KEY` set from the `sentinel/api-key` secret, then `scripts/proof-run.ps1` for scenarios and k6.
 
+## Deploy through GitHub Actions (CD)
+
+Run `deploy` (Actions tab, Run workflow, branch `main`). It builds and pushes the image, applies `infra/demo`, runs the smoke test, then always destroys and runs the teardown check, so no kill timer is needed. Set the repository secrets listed in the README first. If a run is cancelled or hangs, run `destroy` from `main`; if Terraform reports a held state lock, wait for the other run to finish, or `terraform force-unlock <id>` from a laptop after confirming nothing else is running. A red teardown check means resources are left: delete them and re-run `destroy`.
+
 ## Rollback
 
 There is no blue/green. To roll back a bad image: push the previous image tag, then `terraform apply -var image_tag=<tag>` (the service replaces the task). If the stack itself is bad, destroy it (below) and redeploy.

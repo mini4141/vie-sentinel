@@ -1,0 +1,23 @@
+name: destroy
+
+# Manual emergency teardown of the demo stack. Same job the deploy workflow ends with.
+# Runs only from main (the deploy role trusts only refs/heads/main).
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+# Separate from the deploy group on purpose: an emergency teardown must not queue behind a hung deploy.
+# The Terraform state lock in DynamoDB stops two applies or destroys from running at once.
+concurrency:
+  group: sentinel-demo-destroy
+  cancel-in-progress: false
+
+jobs:
+  destroy:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/_teardown.yml
+    secrets: inherit
