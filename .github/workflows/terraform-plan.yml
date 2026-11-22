@@ -7,6 +7,11 @@ on:
   pull_request:
     paths:
       - "infra/**"
+      # the CD workflows apply infra/demo, so changes to them get a plan too
+      - ".github/workflows/deploy.yml"
+      - ".github/workflows/destroy.yml"
+      - ".github/workflows/_teardown.yml"
+      - ".github/workflows/terraform-plan.yml"
 
 permissions:
   id-token: write

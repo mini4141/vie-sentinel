@@ -31,7 +31,7 @@ flowchart LR
 | 5 | CI (GitHub Actions) | [ci.yml](.github/workflows/ci.yml): terraform fmt/validate, detekt, tests, image build, compose smoke test |
 | 6 | Terraform, modular, remote state | [infra/](infra/); `terraform-plan.yml` verified end to end on a PR (closed, not merged), OIDC login, plan posted as a PR comment |
 | 7 | AWS: VPC, ALB, ECS Fargate, RDS, SQS, ECR, Secrets Manager, CloudWatch, SNS | Applied manually from a laptop with the same Terraform: [plan summary](docs/terraform-plan-demo.txt), [apply log](docs/proof/terraform-apply.txt), [destroy log](docs/proof/terraform-destroy.txt) |
-| 8 | GitHub OIDC (no static keys) | [oidc module](infra/modules/oidc/main.tf), used by the PR plan workflow. **CD is manual deploy only**: there is no deploy or destroy workflow |
+| 8 | GitHub OIDC (no static keys) and CD | [oidc module](infra/modules/oidc/main.tf), used by the PR plan workflow (verified). CD: [deploy.yml](.github/workflows/deploy.yml) and [destroy.yml](.github/workflows/destroy.yml) are written but **not yet run**; all AWS deploys so far were manual |
 | 9 | Observability | JSON logs, Micrometer `/actuator/prometheus`, [dashboard and 2 alarms](infra/modules/monitoring/main.tf) |
 | 10 | Cost discipline | ephemeral stack, [kill timer](scripts/kill-timer.ps1), [teardown check](docs/proof/verify-teardown.txt) |
 | 11 | AI-assisted workflow | [CLAUDE.md](CLAUDE.md), [AI_WORKFLOW.md](docs/AI_WORKFLOW.md) |
@@ -68,6 +68,25 @@ Details and failure handling: [runbook](docs/runbook.md). Decisions: [ADR 0001 S
 - Cost Explorer: optional, to be added later once charges post.
 - ECS, RDS and CloudWatch console screenshots were skipped; the saved logs above are the evidence.
 
+## CD workflow (written, not yet run)
+
+`deploy.yml` is `workflow_dispatch` only and must be run from `main`, because the deploy role trusts only the `main` ref of this repository through GitHub OIDC (no stored keys). Jobs run in order:
+
+1. **build**: build the image and push it to ECR, tagged with the commit SHA.
+2. **deploy**: `terraform init` (S3 backend, bucket from a repository variable) and `terraform apply` on `infra/demo` with that image tag.
+3. **smoke**: wait for the ALB health check, run `scripts/smoke-test.sh` against the ALB URL, write the URL and results to the job summary, and upload the proof files as an artifact.
+4. **destroy**: always runs (`if: always()`), even if earlier jobs fail. It runs `terraform destroy`, then `scripts/verify-teardown.sh`, and fails the run if anything is left.
+
+There is no laptop kill timer here: per-job `timeout-minutes` (about 65 minutes in total) and the always-destroy job replace it. A concurrency group allows one deploy at a time. `destroy.yml` is the manual emergency teardown (same destroy and teardown check).
+
+Repository variables to set (Settings, Secrets and variables, Actions, Variables):
+
+| Variable | Used by | Value |
+|---|---|---|
+| `TF_STATE_BUCKET` | plan, deploy, destroy | the state bucket name from the bootstrap output `state_bucket` |
+| `AWS_PLAN_ROLE_ARN` | `terraform-plan.yml` | the bootstrap output `plan_role_arn` |
+| `AWS_DEPLOY_ROLE_ARN` | deploy, destroy | the bootstrap output `deploy_role_arn` |
+
 ## GCP to AWS mapping
 
 | GCP | AWS (this project) |
@@ -92,4 +111,4 @@ The demo stack is estimated at about $0.11 per hour (Fargate 0.5 vCPU / 1 GB, `d
 
 - CI is green (`ci.yml`, run for `ce738a4`): terraform fmt and validate, detekt, tests, image build, and the compose smoke test.
 - `terraform-plan.yml` is verified end to end on a pull request (PR closed, not merged). It logs in to AWS through GitHub OIDC with no stored keys.
-- CD is not built. AWS deploys were run manually from a laptop with the same Terraform, and `deploy.yml` and `destroy.yml` do not exist.
+- CD workflows (`deploy.yml`, `destroy.yml`) are written and linted but have not run yet. AWS deploys so far were run manually from a laptop with the same Terraform. This line changes once a `deploy.yml` run succeeds and ends with a clean destroy.
