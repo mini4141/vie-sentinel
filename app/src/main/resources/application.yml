@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: sentinel
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/sentinel}
+    username: ${SPRING_DATASOURCE_USERNAME:sentinel}
+    password: ${SPRING_DATASOURCE_PASSWORD:sentinel}
+    hikari:
+      maximum-pool-size: 5
+  jackson:
+    deserialization:
+      fail-on-null-for-primitives: false
+  cloud:
+    aws:
+      region:
+        static: ${AWS_REGION:ap-southeast-1}
+
+server:
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    tags:
+      application: sentinel
+
+sentinel:
+  api-key: ${SENTINEL_API_KEY:dev-api-key}
+  scoring:
+    block-threshold: 80
+    review-threshold: 40
+  queue:
+    enabled: ${SENTINEL_QUEUE_ENABLED:true}
+    name: ${SENTINEL_QUEUE_NAME:sentinel-alerts}

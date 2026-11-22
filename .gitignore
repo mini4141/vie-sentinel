@@ -1,0 +1,44 @@
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*credentials*
+accessKeys*.csv
+*_accessKeys.csv
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+tfplan
+*.tfplan
+
+# Gradle / JVM
+.gradle/
+build/
+out/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+hs_err_pid*
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Local data and logs
+*.log
+*.tmp
+docker-data/

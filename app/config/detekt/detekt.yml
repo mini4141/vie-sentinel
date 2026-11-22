@@ -1,0 +1,21 @@
+style:
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    maxLineLength: 140
+  ReturnCount:
+    active: false
+  UnusedPrivateMember:
+    active: true
+complexity:
+  LongParameterList:
+    active: false
+  TooManyFunctions:
+    active: false
+formatting:
+  MaximumLineLength:
+    maxLineLength: 140
+  Wrapping:
+    active: false
+  ArgumentListWrapping:
+    active: false
