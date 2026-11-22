@@ -32,3 +32,8 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 - **Delegated to AI:** image build and push, `terraform apply`/`destroy`, kill timer, proof run, teardown check. The user approved the bootstrap apply and the demo session explicitly and took the console screenshots.
 - **Result:** 36 resources up about 7 minutes after apply started, smoke test PASS on AWS in 21s, k6 343 requests with 0% failures (p95 499ms), destroy of 36 resources, `verify-teardown.ps1` clean. Default sizing was enough, so no escalation ADR.
 - **Went wrong:** `proof-run.ps1` called `bash`, which on this laptop is a WSL stub with no distro, so the smoke step failed locally. Re-ran through Git Bash and pointed the script at it. The corrected script was not re-run end to end.
+
+## Phase 7: documentation
+- **Delegated to AI:** README (Mermaid diagram, showcase table, GCP-to-AWS mapping), three ADRs, runbook.
+- **Reviewed:** claims were checked against the proof files (21s smoke test, 343 k6 requests, p95 499 ms, 36 resources). Cost is an estimate until Cost Explorer shows the real figure.
+- **Left for the user:** console screenshots, Cost Explorer screenshot, setting the GitHub repo variables, confirming CI is green.
