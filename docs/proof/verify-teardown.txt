@@ -1,0 +1,13 @@
+﻿verify-teardown 2026-11-22 12:50:02Z region=ap-southeast-2 identity=arn:aws:iam::<account-id>:user/sentinel-deployer
+[ OK  ] load balancers: 0
+[ OK  ] target groups: 0
+[ OK  ] RDS instances: 0
+[ OK  ] RDS snapshots: 0
+[ OK  ] NAT gateways: 0
+[ OK  ] Elastic IPs: 0
+[ OK  ] ECS clusters: 0
+[ OK  ] ENIs (Project=sentinel): 0
+[ OK  ] VPCs (Project=sentinel): 0
+[ OK  ] SQS queues: 0
+[ OK  ] Secrets (sentinel/): 0
+RESULT: CLEAN - zero leftover billable resources.

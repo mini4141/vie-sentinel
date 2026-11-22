@@ -1,0 +1,4 @@
+Scenarios against http://sentinel-alb-1355798403.ap-southeast-2.elb.amazonaws.com at 2026-11-22T05:41:38.4483249Z
+ALLOW  : {"eventId":"2c807869-a059-413f-a602-8e5a0d14a068","decision":"ALLOW","score":0,"reasons":[]}
+REVIEW : {"eventId":"cc44fe3f-1c4a-404f-bd4e-8320a0ed5194","decision":"REVIEW","score":60,"reasons":["fast_completion: 2s played (min 10)"]}
+BLOCK  : {"eventId":"8c7ce608-eca4-4c50-a6c7-56672283a435","decision":"BLOCK","score":110,"reasons":["fast_completion: 2s played (min 10)","velocity: 7 events in 60s (max 5)"]}

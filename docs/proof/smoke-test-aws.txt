@@ -1,0 +1,22 @@
+BASE_URL=http://sentinel-alb-1355798403.ap-southeast-2.elb.amazonaws.com
+Sentinel smoke test against http://sentinel-alb-1355798403.ap-southeast-2.elb.amazonaws.com (run 179532615626156) started 2026-11-22T05:42:36Z
+[2026-11-22T05:42:36Z] STEP 1 health is UP
+[2026-11-22T05:42:38Z]   PASS (2s) status UP
+[2026-11-22T05:42:40Z] STEP 2 normal event is ALLOW
+  {"eventId":"b7bb909d-0b67-4fd4-a274-e9698f6d2288","decision":"ALLOW","score":0,"reasons":[]}
+[2026-11-22T05:42:41Z]   PASS (1s) ALLOW
+[2026-11-22T05:42:41Z] STEP 3 velocity burst escalates
+  {"eventId":"f95da6bc-ab33-4183-b1a7-58b3029dc38c","decision":"REVIEW","score":50,"reasons":["velocity: 7 events in 60s (max 5)"]}
+[2026-11-22T05:42:48Z]   PASS (7s) REVIEW
+[2026-11-22T05:42:48Z] STEP 4 idempotent replay
+[2026-11-22T05:42:51Z]   PASS (3s) same eventId
+[2026-11-22T05:42:51Z] STEP 5 open case exists
+[2026-11-22T05:42:52Z]   PASS (1s) case 045c6f2d-3983-41e9-a964-cc07804f8500
+[2026-11-22T05:42:53Z] STEP 6 resolve case
+[2026-11-22T05:42:54Z]   PASS (1s) APPROVED
+[2026-11-22T05:42:54Z] STEP 7 rule update writes audit row
+  {"id":"velocity","enabled":true,"shadow":true,"params":{"maxEvents":5,"windowSeconds":60},"updatedAt":"2026-11-22T05:42:55.032909Z","auditId":2}
+[2026-11-22T05:42:56Z]   PASS (2s) audit row written
+[2026-11-22T05:42:56Z] STEP 8 SQS consumer produced alerts (sentinel_alerts_total)
+[2026-11-22T05:42:57Z]   PASS (1s) alerts 306 -> 308
+RESULT: PASS in 21s (http://sentinel-alb-1355798403.ap-southeast-2.elb.amazonaws.com)

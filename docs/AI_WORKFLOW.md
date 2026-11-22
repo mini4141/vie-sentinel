@@ -27,3 +27,8 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 - **How it was found:** `terraform plan` failed with an explicit SCP deny on `ec2:DescribeAvailabilityZones`, and `verify-teardown.ps1` got the same deny on `elasticloadbalancing:Describe*`. The AI wrongly guessed the ALB itself might be blocked and asked the user; the user identified the real cause (region).
 - **Fix:** region and AZ defaults changed to `ap-southeast-2` / `2a`, `2b` everywhere. `scripts/preflight.ps1` now makes one read-only call per service Terraform needs (15 of 15 pass in `ap-southeast-2`). Lesson: run the preflight before writing infrastructure, and treat an SCP deny as a signal to re-check region before assuming a service ban.
 - **Also verified:** `kill-timer.ps1` fired on schedule in a 2-minute dummy run (destroy failed harmlessly because no backend was initialised, then the teardown check ran clean).
+
+## Phase 5: first AWS session (ap-southeast-2)
+- **Delegated to AI:** image build and push, `terraform apply`/`destroy`, kill timer, proof run, teardown check. The user approved the bootstrap apply and the demo session explicitly and took the console screenshots.
+- **Result:** 36 resources up about 7 minutes after apply started, smoke test PASS on AWS in 21s, k6 343 requests with 0% failures (p95 499ms), destroy of 36 resources, `verify-teardown.ps1` clean. Default sizing was enough, so no escalation ADR.
+- **Went wrong:** `proof-run.ps1` called `bash`, which on this laptop is a WSL stub with no distro, so the smoke step failed locally. Re-ran through Git Bash and pointed the script at it. The corrected script was not re-run end to end.

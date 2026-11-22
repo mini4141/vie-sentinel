@@ -1,0 +1,1392 @@
+
+Warning: Deprecated Parameter
+
+The parameter "dynamodb_table" is deprecated. Use parameter "use_lockfile"
+instead.
+Acquiring state lock. This may take a few moments...
+data.aws_ecr_repository.app[0]: Reading...
+module.ecs_service.data.aws_iam_policy_document.ecs_assume: Reading...
+module.ecs_service.data.aws_iam_policy_document.ecs_assume: Read complete after 0s [id=1077804475]
+data.aws_ecr_repository.app[0]: Read complete after 3s [id=sentinel-app]
+data.aws_iam_policy_document.task: Reading...
+data.aws_iam_policy_document.task: Read complete after 0s [id=2131660864]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # aws_secretsmanager_secret.api_key will be destroyed
+  - resource "aws_secretsmanager_secret" "api_key" {
+      - arn                            = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J" -> null
+      - force_overwrite_replica_secret = false -> null
+      - id                             = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J" -> null
+      - name                           = "sentinel/api-key" -> null
+      - recovery_window_in_days        = 0 -> null
+      - tags                           = {} -> null
+      - tags_all                       = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+        # (4 unchanged attributes hidden)
+    }
+
+  # aws_secretsmanager_secret.db_password will be destroyed
+  - resource "aws_secretsmanager_secret" "db_password" {
+      - arn                            = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ" -> null
+      - force_overwrite_replica_secret = false -> null
+      - id                             = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ" -> null
+      - name                           = "sentinel/db-password" -> null
+      - recovery_window_in_days        = 0 -> null
+      - tags                           = {} -> null
+      - tags_all                       = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+        # (4 unchanged attributes hidden)
+    }
+
+  # aws_secretsmanager_secret_version.api_key will be destroyed
+  - resource "aws_secretsmanager_secret_version" "api_key" {
+      - arn              = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J" -> null
+      - id               = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J|terraform-20261122053353009700000004" -> null
+      - secret_id        = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J" -> null
+      - secret_string    = (sensitive value) -> null
+      - secret_string_wo = (write-only attribute) -> null
+      - version_id       = "terraform-20261122053353009700000004" -> null
+      - version_stages   = [
+          - "AWSCURRENT",
+        ] -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # aws_secretsmanager_secret_version.db_password will be destroyed
+  - resource "aws_secretsmanager_secret_version" "db_password" {
+      - arn              = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ" -> null
+      - id               = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ|terraform-20261122053352982300000003" -> null
+      - secret_id        = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ" -> null
+      - secret_string    = (sensitive value) -> null
+      - secret_string_wo = (write-only attribute) -> null
+      - version_id       = "terraform-20261122053352982300000003" -> null
+      - version_stages   = [
+          - "AWSCURRENT",
+        ] -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # random_password.api_key will be destroyed
+  - resource "random_password" "api_key" {
+      - bcrypt_hash = (sensitive value) -> null
+      - id          = "none" -> null
+      - length      = 40 -> null
+      - lower       = true -> null
+      - min_lower   = 0 -> null
+      - min_numeric = 0 -> null
+      - min_special = 0 -> null
+      - min_upper   = 0 -> null
+      - number      = true -> null
+      - numeric     = true -> null
+      - result      = (sensitive value) -> null
+      - special     = false -> null
+      - upper       = true -> null
+    }
+
+  # random_password.db will be destroyed
+  - resource "random_password" "db" {
+      - bcrypt_hash = (sensitive value) -> null
+      - id          = "none" -> null
+      - length      = 24 -> null
+      - lower       = true -> null
+      - min_lower   = 0 -> null
+      - min_numeric = 0 -> null
+      - min_special = 0 -> null
+      - min_upper   = 0 -> null
+      - number      = true -> null
+      - numeric     = true -> null
+      - result      = (sensitive value) -> null
+      - special     = false -> null
+      - upper       = true -> null
+    }
+
+  # module.ecs_service.aws_cloudwatch_log_group.this will be destroyed
+  - resource "aws_cloudwatch_log_group" "this" {
+      - arn               = "arn:aws:logs:ap-southeast-2:<account-id>:log-group:/ecs/sentinel" -> null
+      - id                = "/ecs/sentinel" -> null
+      - log_group_class   = "STANDARD" -> null
+      - name              = "/ecs/sentinel" -> null
+      - retention_in_days = 3 -> null
+      - skip_destroy      = false -> null
+      - tags              = {} -> null
+      - tags_all          = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+        # (2 unchanged attributes hidden)
+    }
+
+  # module.ecs_service.aws_ecs_cluster.this will be destroyed
+  - resource "aws_ecs_cluster" "this" {
+      - arn      = "arn:aws:ecs:ap-southeast-2:<account-id>:cluster/sentinel-cluster" -> null
+      - id       = "arn:aws:ecs:ap-southeast-2:<account-id>:cluster/sentinel-cluster" -> null
+      - name     = "sentinel-cluster" -> null
+      - tags     = {} -> null
+      - tags_all = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+
+      - setting {
+          - name  = "containerInsights" -> null
+          - value = "disabled" -> null
+        }
+    }
+
+  # module.ecs_service.aws_ecs_service.this will be destroyed
+  - resource "aws_ecs_service" "this" {
+      - availability_zone_rebalancing      = "DISABLED" -> null
+      - cluster                            = "arn:aws:ecs:ap-southeast-2:<account-id>:cluster/sentinel-cluster" -> null
+      - deployment_maximum_percent         = 100 -> null
+      - deployment_minimum_healthy_percent = 0 -> null
+      - desired_count                      = 1 -> null
+      - enable_ecs_managed_tags            = false -> null
+      - enable_execute_command             = false -> null
+      - health_check_grace_period_seconds  = 120 -> null
+      - iam_role                           = "/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS" -> null
+      - id                                 = "arn:aws:ecs:ap-southeast-2:<account-id>:service/sentinel-cluster/sentinel-svc" -> null
+      - launch_type                        = "FARGATE" -> null
+      - name                               = "sentinel-svc" -> null
+      - platform_version                   = "LATEST" -> null
+      - propagate_tags                     = "NONE" -> null
+      - scheduling_strategy                = "REPLICA" -> null
+      - tags                               = {} -> null
+      - tags_all                           = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - task_definition                    = "arn:aws:ecs:ap-southeast-2:<account-id>:task-definition/sentinel:1" -> null
+      - triggers                           = {} -> null
+      - wait_for_steady_state              = false -> null
+
+      - deployment_circuit_breaker {
+          - enable   = false -> null
+          - rollback = false -> null
+        }
+
+      - deployment_controller {
+          - type = "ECS" -> null
+        }
+
+      - load_balancer {
+          - container_name   = "sentinel" -> null
+          - container_port   = 8080 -> null
+          - target_group_arn = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:targetgroup/sentinel-tg/cfe9773e2950ffab" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - network_configuration {
+          - assign_public_ip = true -> null
+          - security_groups  = [
+              - "sg-0c165fe70ae4d6e34",
+            ] -> null
+          - subnets          = [
+              - "subnet-05f03224188a90c71",
+              - "subnet-06321cc19471ab5a1",
+            ] -> null
+        }
+    }
+
+  # module.ecs_service.aws_ecs_task_definition.this will be destroyed
+  - resource "aws_ecs_task_definition" "this" {
+      - arn                      = "arn:aws:ecs:ap-southeast-2:<account-id>:task-definition/sentinel:1" -> null
+      - arn_without_revision     = "arn:aws:ecs:ap-southeast-2:<account-id>:task-definition/sentinel" -> null
+      - container_definitions    = jsonencode(
+            [
+              - {
+                  - environment      = [
+                      - {
+                          - name  = "AWS_REGION"
+                          - value = "ap-southeast-2"
+                        },
+                      - {
+                          - name  = "LOGGING_STRUCTURED_FORMAT_CONSOLE"
+                          - value = "logstash"
+                        },
+                      - {
+                          - name  = "SENTINEL_QUEUE_NAME"
+                          - value = "sentinel-alerts"
+                        },
+                      - {
+                          - name  = "SPRING_DATASOURCE_URL"
+                          - value = "jdbc:postgresql://sentinel-db.cv2kmcioquzv.ap-southeast-2.rds.amazonaws.com:5432/sentinel"
+                        },
+                      - {
+                          - name  = "SPRING_DATASOURCE_USERNAME"
+                          - value = "sentinel"
+                        },
+                    ]
+                  - essential        = true
+                  - image            = "<account-id>.dkr.ecr.ap-southeast-2.amazonaws.com/sentinel-app:latest"
+                  - logConfiguration = {
+                      - logDriver = "awslogs"
+                      - options   = {
+                          - awslogs-group         = "/ecs/sentinel"
+                          - awslogs-region        = "ap-southeast-2"
+                          - awslogs-stream-prefix = "app"
+                        }
+                    }
+                  - mountPoints      = []
+                  - name             = "sentinel"
+                  - portMappings     = [
+                      - {
+                          - containerPort = 8080
+                          - hostPort      = 8080
+                          - protocol      = "tcp"
+                        },
+                    ]
+                  - secrets          = [
+                      - {
+                          - name      = "SENTINEL_API_KEY"
+                          - valueFrom = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J"
+                        },
+                      - {
+                          - name      = "SPRING_DATASOURCE_PASSWORD"
+                          - valueFrom = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ"
+                        },
+                    ]
+                  - systemControls   = []
+                  - volumesFrom      = []
+                },
+            ]
+        ) -> null
+      - cpu                      = "512" -> null
+      - enable_fault_injection   = false -> null
+      - execution_role_arn       = "arn:aws:iam::<account-id>:role/sentinel-ecs-exec" -> null
+      - family                   = "sentinel" -> null
+      - id                       = "sentinel" -> null
+      - memory                   = "1024" -> null
+      - network_mode             = "awsvpc" -> null
+      - requires_compatibilities = [
+          - "FARGATE",
+        ] -> null
+      - revision                 = 1 -> null
+      - skip_destroy             = false -> null
+      - tags                     = {} -> null
+      - tags_all                 = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - task_role_arn            = "arn:aws:iam::<account-id>:role/sentinel-ecs-task" -> null
+      - track_latest             = false -> null
+        # (2 unchanged attributes hidden)
+
+      - runtime_platform {
+          - cpu_architecture        = "X86_64" -> null
+          - operating_system_family = "LINUX" -> null
+        }
+    }
+
+  # module.ecs_service.aws_iam_role.execution will be destroyed
+  - resource "aws_iam_role" "execution" {
+      - arn                   = "arn:aws:iam::<account-id>:role/sentinel-ecs-exec" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "ecs-tasks.amazonaws.com"
+                        }
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-22T05:33:55Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "sentinel-ecs-exec" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "sentinel-ecs-exec" -> null
+      - path                  = "/" -> null
+      - tags                  = {} -> null
+      - tags_all              = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - unique_id             = "AROAQWJIH3RNCA5BY7IJ4" -> null
+        # (3 unchanged attributes hidden)
+
+      - inline_policy {
+          - name   = "read-secrets" -> null
+          - policy = jsonencode(
+                {
+                  - Statement = [
+                      - {
+                          - Action   = [
+                              - "secretsmanager:GetSecretValue",
+                            ]
+                          - Effect   = "Allow"
+                          - Resource = [
+                              - "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J",
+                              - "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ",
+                            ]
+                        },
+                    ]
+                  - Version   = "2012-10-17"
+                }
+            ) -> null
+        }
+    }
+
+  # module.ecs_service.aws_iam_role.task will be destroyed
+  - resource "aws_iam_role" "task" {
+      - arn                   = "arn:aws:iam::<account-id>:role/sentinel-ecs-task" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "ecs-tasks.amazonaws.com"
+                        }
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-22T05:33:55Z" -> null
+      - force_detach_policies = false -> null
+      - id                    = "sentinel-ecs-task" -> null
+      - managed_policy_arns   = [] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "sentinel-ecs-task" -> null
+      - path                  = "/" -> null
+      - tags                  = {} -> null
+      - tags_all              = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - unique_id             = "AROAQWJIH3RNOPRMZ3ZAV" -> null
+        # (3 unchanged attributes hidden)
+
+      - inline_policy {
+          - name   = "app" -> null
+          - policy = jsonencode(
+                {
+                  - Statement = [
+                      - {
+                          - Action   = [
+                              - "sqs:SendMessage",
+                              - "sqs:ReceiveMessage",
+                              - "sqs:GetQueueUrl",
+                              - "sqs:GetQueueAttributes",
+                              - "sqs:DeleteMessage",
+                              - "sqs:ChangeMessageVisibility",
+                            ]
+                          - Effect   = "Allow"
+                          - Resource = "arn:aws:sqs:ap-southeast-2:<account-id>:sentinel-alerts"
+                        },
+                    ]
+                  - Version   = "2012-10-17"
+                }
+            ) -> null
+        }
+    }
+
+  # module.ecs_service.aws_iam_role_policy.execution_secrets will be destroyed
+  - resource "aws_iam_role_policy" "execution_secrets" {
+      - id          = "sentinel-ecs-exec:read-secrets" -> null
+      - name        = "read-secrets" -> null
+      - policy      = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action   = [
+                          - "secretsmanager:GetSecretValue",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = [
+                          - "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J",
+                          - "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ",
+                        ]
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - role        = "sentinel-ecs-exec" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.ecs_service.aws_iam_role_policy.task will be destroyed
+  - resource "aws_iam_role_policy" "task" {
+      - id          = "sentinel-ecs-task:app" -> null
+      - name        = "app" -> null
+      - policy      = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action   = [
+                          - "sqs:SendMessage",
+                          - "sqs:ReceiveMessage",
+                          - "sqs:GetQueueUrl",
+                          - "sqs:GetQueueAttributes",
+                          - "sqs:DeleteMessage",
+                          - "sqs:ChangeMessageVisibility",
+                        ]
+                      - Effect   = "Allow"
+                      - Resource = "arn:aws:sqs:ap-southeast-2:<account-id>:sentinel-alerts"
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - role        = "sentinel-ecs-task" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.ecs_service.aws_iam_role_policy_attachment.execution will be destroyed
+  - resource "aws_iam_role_policy_attachment" "execution" {
+      - id         = "sentinel-ecs-exec-20261122053356976200000005" -> null
+      - policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy" -> null
+      - role       = "sentinel-ecs-exec" -> null
+    }
+
+  # module.ecs_service.aws_lb.this will be destroyed
+  - resource "aws_lb" "this" {
+      - arn                                                          = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:loadbalancer/app/sentinel-alb/0d362f87da8035ae" -> null
+      - arn_suffix                                                   = "app/sentinel-alb/0d362f87da8035ae" -> null
+      - client_keep_alive                                            = 3600 -> null
+      - desync_mitigation_mode                                       = "defensive" -> null
+      - dns_name                                                     = "sentinel-alb-1355798403.ap-southeast-2.elb.amazonaws.com" -> null
+      - drop_invalid_header_fields                                   = false -> null
+      - enable_cross_zone_load_balancing                             = true -> null
+      - enable_deletion_protection                                   = false -> null
+      - enable_http2                                                 = true -> null
+      - enable_tls_version_and_cipher_suite_headers                  = false -> null
+      - enable_waf_fail_open                                         = false -> null
+      - enable_xff_client_port                                       = false -> null
+      - enable_zonal_shift                                           = false -> null
+      - id                                                           = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:loadbalancer/app/sentinel-alb/0d362f87da8035ae" -> null
+      - idle_timeout                                                 = 60 -> null
+      - internal                                                     = false -> null
+      - ip_address_type                                              = "ipv4" -> null
+      - load_balancer_type                                           = "application" -> null
+      - name                                                         = "sentinel-alb" -> null
+      - preserve_host_header                                         = false -> null
+      - security_groups                                              = [
+          - "sg-0973ecfbb94179492",
+        ] -> null
+      - subnets                                                      = [
+          - "subnet-05f03224188a90c71",
+          - "subnet-06321cc19471ab5a1",
+        ] -> null
+      - tags                                                         = {} -> null
+      - tags_all                                                     = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id                                                       = "vpc-0924fdb01c4645cd0" -> null
+      - xff_header_processing_mode                                   = "append" -> null
+      - zone_id                                                      = "Z1GM3OXH4ZPM65" -> null
+        # (3 unchanged attributes hidden)
+
+      - access_logs {
+          - enabled = false -> null
+            # (2 unchanged attributes hidden)
+        }
+
+      - connection_logs {
+          - enabled = false -> null
+            # (2 unchanged attributes hidden)
+        }
+
+      - subnet_mapping {
+          - subnet_id            = "subnet-05f03224188a90c71" -> null
+            # (4 unchanged attributes hidden)
+        }
+      - subnet_mapping {
+          - subnet_id            = "subnet-06321cc19471ab5a1" -> null
+            # (4 unchanged attributes hidden)
+        }
+    }
+
+  # module.ecs_service.aws_lb_listener.http will be destroyed
+  - resource "aws_lb_listener" "http" {
+      - arn                                                                 = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:listener/app/sentinel-alb/0d362f87da8035ae/9550ee64120d1bab" -> null
+      - id                                                                  = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:listener/app/sentinel-alb/0d362f87da8035ae/9550ee64120d1bab" -> null
+      - load_balancer_arn                                                   = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:loadbalancer/app/sentinel-alb/0d362f87da8035ae" -> null
+      - port                                                                = 80 -> null
+      - protocol                                                            = "HTTP" -> null
+      - routing_http_response_server_enabled                                = true -> null
+      - tags                                                                = {} -> null
+      - tags_all                                                            = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+        # (11 unchanged attributes hidden)
+
+      - default_action {
+          - order            = 1 -> null
+          - target_group_arn = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:targetgroup/sentinel-tg/cfe9773e2950ffab" -> null
+          - type             = "forward" -> null
+        }
+    }
+
+  # module.ecs_service.aws_lb_target_group.this will be destroyed
+  - resource "aws_lb_target_group" "this" {
+      - arn                                = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:targetgroup/sentinel-tg/cfe9773e2950ffab" -> null
+      - arn_suffix                         = "targetgroup/sentinel-tg/cfe9773e2950ffab" -> null
+      - deregistration_delay               = "10" -> null
+      - id                                 = "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:targetgroup/sentinel-tg/cfe9773e2950ffab" -> null
+      - ip_address_type                    = "ipv4" -> null
+      - lambda_multi_value_headers_enabled = false -> null
+      - load_balancer_arns                 = [
+          - "arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:loadbalancer/app/sentinel-alb/0d362f87da8035ae",
+        ] -> null
+      - load_balancing_algorithm_type      = "round_robin" -> null
+      - load_balancing_anomaly_mitigation  = "off" -> null
+      - load_balancing_cross_zone_enabled  = "use_load_balancer_configuration" -> null
+      - name                               = "sentinel-tg" -> null
+      - port                               = 8080 -> null
+      - protocol                           = "HTTP" -> null
+      - protocol_version                   = "HTTP1" -> null
+      - proxy_protocol_v2                  = false -> null
+      - slow_start                         = 0 -> null
+      - tags                               = {} -> null
+      - tags_all                           = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - target_type                        = "ip" -> null
+      - vpc_id                             = "vpc-0924fdb01c4645cd0" -> null
+        # (1 unchanged attribute hidden)
+
+      - health_check {
+          - enabled             = true -> null
+          - healthy_threshold   = 2 -> null
+          - interval            = 15 -> null
+          - matcher             = "200" -> null
+          - path                = "/actuator/health" -> null
+          - port                = "traffic-port" -> null
+          - protocol            = "HTTP" -> null
+          - timeout             = 5 -> null
+          - unhealthy_threshold = 5 -> null
+        }
+
+      - stickiness {
+          - cookie_duration = 86400 -> null
+          - enabled         = false -> null
+          - type            = "lb_cookie" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - target_failover {}
+
+      - target_group_health {
+          - dns_failover {
+              - minimum_healthy_targets_count      = "1" -> null
+              - minimum_healthy_targets_percentage = "off" -> null
+            }
+          - unhealthy_state_routing {
+              - minimum_healthy_targets_count      = 1 -> null
+              - minimum_healthy_targets_percentage = "off" -> null
+            }
+        }
+
+      - target_health_state {}
+    }
+
+  # module.ecs_service.aws_security_group.alb will be destroyed
+  - resource "aws_security_group" "alb" {
+      - arn                    = "arn:aws:ec2:ap-southeast-2:<account-id>:security-group/sg-0973ecfbb94179492" -> null
+      - description            = "HTTP from anywhere" -> null
+      - egress                 = [
+          - {
+              - cidr_blocks      = [
+                  - "0.0.0.0/0",
+                ]
+              - from_port        = 0
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "-1"
+              - security_groups  = []
+              - self             = false
+              - to_port          = 0
+                # (1 unchanged attribute hidden)
+            },
+        ] -> null
+      - id                     = "sg-0973ecfbb94179492" -> null
+      - ingress                = [
+          - {
+              - cidr_blocks      = [
+                  - "0.0.0.0/0",
+                ]
+              - from_port        = 80
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "tcp"
+              - security_groups  = []
+              - self             = false
+              - to_port          = 80
+                # (1 unchanged attribute hidden)
+            },
+        ] -> null
+      - name                   = "sentinel-alb" -> null
+      - owner_id               = "<account-id>" -> null
+      - revoke_rules_on_delete = false -> null
+      - tags                   = {} -> null
+      - tags_all               = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id                 = "vpc-0924fdb01c4645cd0" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.ecs_service.aws_security_group.ecs will be destroyed
+  - resource "aws_security_group" "ecs" {
+      - arn                    = "arn:aws:ec2:ap-southeast-2:<account-id>:security-group/sg-0c165fe70ae4d6e34" -> null
+      - description            = "App traffic from the ALB only" -> null
+      - egress                 = [
+          - {
+              - cidr_blocks      = [
+                  - "0.0.0.0/0",
+                ]
+              - from_port        = 0
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "-1"
+              - security_groups  = []
+              - self             = false
+              - to_port          = 0
+                # (1 unchanged attribute hidden)
+            },
+        ] -> null
+      - id                     = "sg-0c165fe70ae4d6e34" -> null
+      - ingress                = [
+          - {
+              - cidr_blocks      = []
+              - from_port        = 8080
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "tcp"
+              - security_groups  = [
+                  - "sg-0973ecfbb94179492",
+                ]
+              - self             = false
+              - to_port          = 8080
+                # (1 unchanged attribute hidden)
+            },
+        ] -> null
+      - name                   = "sentinel-ecs" -> null
+      - owner_id               = "<account-id>" -> null
+      - revoke_rules_on_delete = false -> null
+      - tags                   = {} -> null
+      - tags_all               = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id                 = "vpc-0924fdb01c4645cd0" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.monitoring.aws_cloudwatch_dashboard.this will be destroyed
+  - resource "aws_cloudwatch_dashboard" "this" {
+      - dashboard_arn  = "arn:aws:cloudwatch::<account-id>:dashboard/sentinel-demo" -> null
+      - dashboard_body = jsonencode(
+            {
+              - widgets = [
+                  - {
+                      - height     = 6
+                      - properties = {
+                          - metrics = [
+                              - [
+                                  - "AWS/ApplicationELB",
+                                  - "RequestCount",
+                                  - "LoadBalancer",
+                                  - "app/sentinel-alb/0d362f87da8035ae",
+                                ],
+                              - [
+                                  - ".",
+                                  - "HTTPCode_Target_5XX_Count",
+                                  - ".",
+                                  - ".",
+                                ],
+                            ]
+                          - period  = 60
+                          - region  = "ap-southeast-2"
+                          - stat    = "Sum"
+                          - title   = "ALB requests and 5xx"
+                        }
+                      - type       = "metric"
+                      - width      = 12
+                      - x          = 0
+                      - y          = 0
+                    },
+                  - {
+                      - height     = 6
+                      - properties = {
+                          - metrics = [
+                              - [
+                                  - "AWS/ECS",
+                                  - "CPUUtilization",
+                                  - "ClusterName",
+                                  - "sentinel-cluster",
+                                  - "ServiceName",
+                                  - "sentinel-svc",
+                                ],
+                              - [
+                                  - ".",
+                                  - "MemoryUtilization",
+                                  - ".",
+                                  - ".",
+                                  - ".",
+                                  - ".",
+                                ],
+                            ]
+                          - period  = 60
+                          - region  = "ap-southeast-2"
+                          - stat    = "Average"
+                          - title   = "ECS CPU and memory (%)"
+                        }
+                      - type       = "metric"
+                      - width      = 12
+                      - x          = 12
+                      - y          = 0
+                    },
+                  - {
+                      - height     = 6
+                      - properties = {
+                          - metrics = [
+                              - [
+                                  - "AWS/SQS",
+                                  - "ApproximateNumberOfMessagesVisible",
+                                  - "QueueName",
+                                  - "sentinel-alerts",
+                                ],
+                              - [
+                                  - "AWS/SQS",
+                                  - "ApproximateNumberOfMessagesVisible",
+                                  - "QueueName",
+                                  - "sentinel-alerts-dlq",
+                                ],
+                            ]
+                          - period  = 60
+                          - region  = "ap-southeast-2"
+                          - stat    = "Maximum"
+                          - title   = "SQS queue and DLQ depth"
+                        }
+                      - type       = "metric"
+                      - width      = 12
+                      - x          = 0
+                      - y          = 6
+                    },
+                  - {
+                      - height     = 6
+                      - properties = {
+                          - metrics = [
+                              - [
+                                  - "AWS/RDS",
+                                  - "CPUUtilization",
+                                  - "DBInstanceIdentifier",
+                                  - "sentinel-db",
+                                ],
+                              - [
+                                  - ".",
+                                  - "DatabaseConnections",
+                                  - ".",
+                                  - ".",
+                                ],
+                            ]
+                          - period  = 60
+                          - region  = "ap-southeast-2"
+                          - stat    = "Average"
+                          - title   = "RDS CPU and connections"
+                        }
+                      - type       = "metric"
+                      - width      = 12
+                      - x          = 12
+                      - y          = 6
+                    },
+                ]
+            }
+        ) -> null
+      - dashboard_name = "sentinel-demo" -> null
+      - id             = "sentinel-demo" -> null
+    }
+
+  # module.monitoring.aws_cloudwatch_metric_alarm.alb_5xx will be destroyed
+  - resource "aws_cloudwatch_metric_alarm" "alb_5xx" {
+      - actions_enabled                       = true -> null
+      - alarm_actions                         = [
+          - "arn:aws:sns:ap-southeast-2:<account-id>:sentinel-alerts",
+        ] -> null
+      - alarm_description                     = "Target 5xx responses behind the ALB" -> null
+      - alarm_name                            = "sentinel-alb-5xx" -> null
+      - arn                                   = "arn:aws:cloudwatch:ap-southeast-2:<account-id>:alarm:sentinel-alb-5xx" -> null
+      - comparison_operator                   = "GreaterThanOrEqualToThreshold" -> null
+      - datapoints_to_alarm                   = 0 -> null
+      - dimensions                            = {
+          - "LoadBalancer" = "app/sentinel-alb/0d362f87da8035ae"
+        } -> null
+      - evaluation_periods                    = 1 -> null
+      - id                                    = "sentinel-alb-5xx" -> null
+      - insufficient_data_actions             = [] -> null
+      - metric_name                           = "HTTPCode_Target_5XX_Count" -> null
+      - namespace                             = "AWS/ApplicationELB" -> null
+      - ok_actions                            = [] -> null
+      - period                                = 60 -> null
+      - statistic                             = "Sum" -> null
+      - tags                                  = {} -> null
+      - tags_all                              = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - threshold                             = 5 -> null
+      - treat_missing_data                    = "notBreaching" -> null
+        # (4 unchanged attributes hidden)
+    }
+
+  # module.monitoring.aws_cloudwatch_metric_alarm.dlq_not_empty will be destroyed
+  - resource "aws_cloudwatch_metric_alarm" "dlq_not_empty" {
+      - actions_enabled                       = true -> null
+      - alarm_actions                         = [
+          - "arn:aws:sns:ap-southeast-2:<account-id>:sentinel-alerts",
+        ] -> null
+      - alarm_description                     = "Messages landed in the dead-letter queue" -> null
+      - alarm_name                            = "sentinel-dlq-not-empty" -> null
+      - arn                                   = "arn:aws:cloudwatch:ap-southeast-2:<account-id>:alarm:sentinel-dlq-not-empty" -> null
+      - comparison_operator                   = "GreaterThanOrEqualToThreshold" -> null
+      - datapoints_to_alarm                   = 0 -> null
+      - dimensions                            = {
+          - "QueueName" = "sentinel-alerts-dlq"
+        } -> null
+      - evaluation_periods                    = 1 -> null
+      - id                                    = "sentinel-dlq-not-empty" -> null
+      - insufficient_data_actions             = [] -> null
+      - metric_name                           = "ApproximateNumberOfMessagesVisible" -> null
+      - namespace                             = "AWS/SQS" -> null
+      - ok_actions                            = [] -> null
+      - period                                = 60 -> null
+      - statistic                             = "Maximum" -> null
+      - tags                                  = {} -> null
+      - tags_all                              = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - threshold                             = 1 -> null
+      - treat_missing_data                    = "notBreaching" -> null
+        # (4 unchanged attributes hidden)
+    }
+
+  # module.monitoring.aws_sns_topic.alerts will be destroyed
+  - resource "aws_sns_topic" "alerts" {
+      - application_success_feedback_sample_rate = 0 -> null
+      - arn                                      = "arn:aws:sns:ap-southeast-2:<account-id>:sentinel-alerts" -> null
+      - content_based_deduplication              = false -> null
+      - fifo_topic                               = false -> null
+      - firehose_success_feedback_sample_rate    = 0 -> null
+      - http_success_feedback_sample_rate        = 0 -> null
+      - id                                       = "arn:aws:sns:ap-southeast-2:<account-id>:sentinel-alerts" -> null
+      - lambda_success_feedback_sample_rate      = 0 -> null
+      - name                                     = "sentinel-alerts" -> null
+      - owner                                    = "<account-id>" -> null
+      - policy                                   = jsonencode(
+            {
+              - Id        = "__default_policy_ID"
+              - Statement = [
+                  - {
+                      - Action    = [
+                          - "SNS:GetTopicAttributes",
+                          - "SNS:SetTopicAttributes",
+                          - "SNS:AddPermission",
+                          - "SNS:RemovePermission",
+                          - "SNS:DeleteTopic",
+                          - "SNS:Subscribe",
+                          - "SNS:ListSubscriptionsByTopic",
+                          - "SNS:Publish",
+                        ]
+                      - Condition = {
+                          - StringEquals = {
+                              - "AWS:SourceOwner" = "<account-id>"
+                            }
+                        }
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - AWS = "*"
+                        }
+                      - Resource  = "arn:aws:sns:ap-southeast-2:<account-id>:sentinel-alerts"
+                      - Sid       = "__default_statement_ID"
+                    },
+                ]
+              - Version   = "2008-10-17"
+            }
+        ) -> null
+      - signature_version                        = 0 -> null
+      - sqs_success_feedback_sample_rate         = 0 -> null
+      - tags                                     = {} -> null
+      - tags_all                                 = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+        # (18 unchanged attributes hidden)
+    }
+
+  # module.network.aws_internet_gateway.this will be destroyed
+  - resource "aws_internet_gateway" "this" {
+      - arn      = "arn:aws:ec2:ap-southeast-2:<account-id>:internet-gateway/igw-0a57f5f20652d643e" -> null
+      - id       = "igw-0a57f5f20652d643e" -> null
+      - owner_id = "<account-id>" -> null
+      - tags     = {
+          - "Name" = "sentinel-igw"
+        } -> null
+      - tags_all = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Name"      = "sentinel-igw"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id   = "vpc-0924fdb01c4645cd0" -> null
+    }
+
+  # module.network.aws_route_table.public will be destroyed
+  - resource "aws_route_table" "public" {
+      - arn              = "arn:aws:ec2:ap-southeast-2:<account-id>:route-table/rtb-04b4001b72de03b0a" -> null
+      - id               = "rtb-04b4001b72de03b0a" -> null
+      - owner_id         = "<account-id>" -> null
+      - propagating_vgws = [] -> null
+      - route            = [
+          - {
+              - cidr_block                 = "0.0.0.0/0"
+              - gateway_id                 = "igw-0a57f5f20652d643e"
+                # (11 unchanged attributes hidden)
+            },
+        ] -> null
+      - tags             = {
+          - "Name" = "sentinel-public"
+        } -> null
+      - tags_all         = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Name"      = "sentinel-public"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id           = "vpc-0924fdb01c4645cd0" -> null
+    }
+
+  # module.network.aws_route_table_association.public[0] will be destroyed
+  - resource "aws_route_table_association" "public" {
+      - id             = "rtbassoc-0f26078c8596c84c9" -> null
+      - route_table_id = "rtb-04b4001b72de03b0a" -> null
+      - subnet_id      = "subnet-06321cc19471ab5a1" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.network.aws_route_table_association.public[1] will be destroyed
+  - resource "aws_route_table_association" "public" {
+      - id             = "rtbassoc-03e29344557bb7aff" -> null
+      - route_table_id = "rtb-04b4001b72de03b0a" -> null
+      - subnet_id      = "subnet-05f03224188a90c71" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.network.aws_subnet.public[0] will be destroyed
+  - resource "aws_subnet" "public" {
+      - arn                                            = "arn:aws:ec2:ap-southeast-2:<account-id>:subnet/subnet-06321cc19471ab5a1" -> null
+      - assign_ipv6_address_on_creation                = false -> null
+      - availability_zone                              = "ap-southeast-2a" -> null
+      - availability_zone_id                           = "apse2-az1" -> null
+      - cidr_block                                     = "10.0.0.0/24" -> null
+      - enable_dns64                                   = false -> null
+      - enable_lni_at_device_index                     = 0 -> null
+      - enable_resource_name_dns_a_record_on_launch    = false -> null
+      - enable_resource_name_dns_aaaa_record_on_launch = false -> null
+      - id                                             = "subnet-06321cc19471ab5a1" -> null
+      - ipv6_native                                    = false -> null
+      - map_customer_owned_ip_on_launch                = false -> null
+      - map_public_ip_on_launch                        = true -> null
+      - owner_id                                       = "<account-id>" -> null
+      - private_dns_hostname_type_on_launch            = "ip-name" -> null
+      - tags                                           = {
+          - "Name" = "sentinel-public-0"
+        } -> null
+      - tags_all                                       = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Name"      = "sentinel-public-0"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id                                         = "vpc-0924fdb01c4645cd0" -> null
+        # (4 unchanged attributes hidden)
+    }
+
+  # module.network.aws_subnet.public[1] will be destroyed
+  - resource "aws_subnet" "public" {
+      - arn                                            = "arn:aws:ec2:ap-southeast-2:<account-id>:subnet/subnet-05f03224188a90c71" -> null
+      - assign_ipv6_address_on_creation                = false -> null
+      - availability_zone                              = "ap-southeast-2b" -> null
+      - availability_zone_id                           = "apse2-az3" -> null
+      - cidr_block                                     = "10.0.1.0/24" -> null
+      - enable_dns64                                   = false -> null
+      - enable_lni_at_device_index                     = 0 -> null
+      - enable_resource_name_dns_a_record_on_launch    = false -> null
+      - enable_resource_name_dns_aaaa_record_on_launch = false -> null
+      - id                                             = "subnet-05f03224188a90c71" -> null
+      - ipv6_native                                    = false -> null
+      - map_customer_owned_ip_on_launch                = false -> null
+      - map_public_ip_on_launch                        = true -> null
+      - owner_id                                       = "<account-id>" -> null
+      - private_dns_hostname_type_on_launch            = "ip-name" -> null
+      - tags                                           = {
+          - "Name" = "sentinel-public-1"
+        } -> null
+      - tags_all                                       = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Name"      = "sentinel-public-1"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id                                         = "vpc-0924fdb01c4645cd0" -> null
+        # (4 unchanged attributes hidden)
+    }
+
+  # module.network.aws_vpc.this will be destroyed
+  - resource "aws_vpc" "this" {
+      - arn                                  = "arn:aws:ec2:ap-southeast-2:<account-id>:vpc/vpc-0924fdb01c4645cd0" -> null
+      - assign_generated_ipv6_cidr_block     = false -> null
+      - cidr_block                           = "10.0.0.0/16" -> null
+      - default_network_acl_id               = "acl-010aac54079e07df8" -> null
+      - default_route_table_id               = "rtb-0b3b759bbdb648e50" -> null
+      - default_security_group_id            = "sg-035518e154abc3de1" -> null
+      - dhcp_options_id                      = "dopt-08c4f5e8aa1e6d2df" -> null
+      - enable_dns_hostnames                 = true -> null
+      - enable_dns_support                   = true -> null
+      - enable_network_address_usage_metrics = false -> null
+      - id                                   = "vpc-0924fdb01c4645cd0" -> null
+      - instance_tenancy                     = "default" -> null
+      - ipv6_netmask_length                  = 0 -> null
+      - main_route_table_id                  = "rtb-0b3b759bbdb648e50" -> null
+      - owner_id                             = "<account-id>" -> null
+      - tags                                 = {
+          - "Name" = "sentinel-vpc"
+        } -> null
+      - tags_all                             = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Name"      = "sentinel-vpc"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+        # (4 unchanged attributes hidden)
+    }
+
+  # module.rds.aws_db_instance.this will be destroyed
+  - resource "aws_db_instance" "this" {
+      - address                               = "sentinel-db.cv2kmcioquzv.ap-southeast-2.rds.amazonaws.com" -> null
+      - allocated_storage                     = 20 -> null
+      - apply_immediately                     = true -> null
+      - arn                                   = "arn:aws:rds:ap-southeast-2:<account-id>:db:sentinel-db" -> null
+      - auto_minor_version_upgrade            = true -> null
+      - availability_zone                     = "ap-southeast-2a" -> null
+      - backup_retention_period               = 0 -> null
+      - backup_target                         = "region" -> null
+      - backup_window                         = "14:39-15:09" -> null
+      - ca_cert_identifier                    = "rds-ca-rsa2048-g1" -> null
+      - copy_tags_to_snapshot                 = false -> null
+      - customer_owned_ip_enabled             = false -> null
+      - database_insights_mode                = "standard" -> null
+      - db_name                               = "sentinel" -> null
+      - db_subnet_group_name                  = "sentinel-db" -> null
+      - dedicated_log_volume                  = false -> null
+      - delete_automated_backups              = true -> null
+      - deletion_protection                   = false -> null
+      - domain_dns_ips                        = [] -> null
+      - enabled_cloudwatch_logs_exports       = [] -> null
+      - endpoint                              = "sentinel-db.cv2kmcioquzv.ap-southeast-2.rds.amazonaws.com:5432" -> null
+      - engine                                = "postgres" -> null
+      - engine_lifecycle_support              = "open-source-rds-extended-support" -> null
+      - engine_version                        = "16" -> null
+      - engine_version_actual                 = "16.13" -> null
+      - hosted_zone_id                        = "Z32T0VRHXEXS0V" -> null
+      - iam_database_authentication_enabled   = false -> null
+      - id                                    = "db-ZQ4UHC36SCZ5FWEWIW5CKVQTTE" -> null
+      - identifier                            = "sentinel-db" -> null
+      - instance_class                        = "db.t4g.micro" -> null
+      - iops                                  = 3000 -> null
+      - kms_key_id                            = "arn:aws:kms:ap-southeast-2:<account-id>:key/f629770a-e278-4567-b26d-2ff96309b8e6" -> null
+      - license_model                         = "postgresql-license" -> null
+      - listener_endpoint                     = [] -> null
+      - maintenance_window                    = "fri:18:22-fri:18:52" -> null
+      - master_user_secret                    = [] -> null
+      - max_allocated_storage                 = 0 -> null
+      - monitoring_interval                   = 0 -> null
+      - multi_az                              = false -> null
+      - network_type                          = "IPV4" -> null
+      - option_group_name                     = "default:postgres-16" -> null
+      - parameter_group_name                  = "default.postgres16" -> null
+      - password                              = (sensitive value) -> null
+      - password_wo                           = (write-only attribute) -> null
+      - performance_insights_enabled          = false -> null
+      - performance_insights_retention_period = 0 -> null
+      - port                                  = 5432 -> null
+      - publicly_accessible                   = false -> null
+      - replicas                              = [] -> null
+      - resource_id                           = "db-ZQ4UHC36SCZ5FWEWIW5CKVQTTE" -> null
+      - skip_final_snapshot                   = true -> null
+      - status                                = "available" -> null
+      - storage_encrypted                     = true -> null
+      - storage_throughput                    = 125 -> null
+      - storage_type                          = "gp3" -> null
+      - tags                                  = {} -> null
+      - tags_all                              = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - username                              = "sentinel" -> null
+      - vpc_security_group_ids                = [
+          - "sg-0fc98be7b50dd94ac",
+        ] -> null
+        # (15 unchanged attributes hidden)
+    }
+
+  # module.rds.aws_db_subnet_group.this will be destroyed
+  - resource "aws_db_subnet_group" "this" {
+      - arn                     = "arn:aws:rds:ap-southeast-2:<account-id>:subgrp:sentinel-db" -> null
+      - description             = "Managed by Terraform" -> null
+      - id                      = "sentinel-db" -> null
+      - name                    = "sentinel-db" -> null
+      - subnet_ids              = [
+          - "subnet-05f03224188a90c71",
+          - "subnet-06321cc19471ab5a1",
+        ] -> null
+      - supported_network_types = [
+          - "IPV4",
+        ] -> null
+      - tags                    = {} -> null
+      - tags_all                = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id                  = "vpc-0924fdb01c4645cd0" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.rds.aws_security_group.db will be destroyed
+  - resource "aws_security_group" "db" {
+      - arn                    = "arn:aws:ec2:ap-southeast-2:<account-id>:security-group/sg-0fc98be7b50dd94ac" -> null
+      - description            = "Postgres from the ECS tasks only" -> null
+      - egress                 = [] -> null
+      - id                     = "sg-0fc98be7b50dd94ac" -> null
+      - ingress                = [
+          - {
+              - cidr_blocks      = []
+              - from_port        = 5432
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "tcp"
+              - security_groups  = [
+                  - "sg-0c165fe70ae4d6e34",
+                ]
+              - self             = false
+              - to_port          = 5432
+                # (1 unchanged attribute hidden)
+            },
+        ] -> null
+      - name                   = "sentinel-rds" -> null
+      - owner_id               = "<account-id>" -> null
+      - revoke_rules_on_delete = false -> null
+      - tags                   = {} -> null
+      - tags_all               = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - vpc_id                 = "vpc-0924fdb01c4645cd0" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # module.sqs.aws_sqs_queue.dlq will be destroyed
+  - resource "aws_sqs_queue" "dlq" {
+      - arn                               = "arn:aws:sqs:ap-southeast-2:<account-id>:sentinel-alerts-dlq" -> null
+      - content_based_deduplication       = false -> null
+      - delay_seconds                     = 0 -> null
+      - fifo_queue                        = false -> null
+      - id                                = "https://sqs.ap-southeast-2.amazonaws.com/<account-id>/sentinel-alerts-dlq" -> null
+      - kms_data_key_reuse_period_seconds = 300 -> null
+      - max_message_size                  = 262144 -> null
+      - message_retention_seconds         = 86400 -> null
+      - name                              = "sentinel-alerts-dlq" -> null
+      - receive_wait_time_seconds         = 0 -> null
+      - sqs_managed_sse_enabled           = true -> null
+      - tags                              = {} -> null
+      - tags_all                          = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - url                               = "https://sqs.ap-southeast-2.amazonaws.com/<account-id>/sentinel-alerts-dlq" -> null
+      - visibility_timeout_seconds        = 30 -> null
+        # (7 unchanged attributes hidden)
+    }
+
+  # module.sqs.aws_sqs_queue.main will be destroyed
+  - resource "aws_sqs_queue" "main" {
+      - arn                               = "arn:aws:sqs:ap-southeast-2:<account-id>:sentinel-alerts" -> null
+      - content_based_deduplication       = false -> null
+      - delay_seconds                     = 0 -> null
+      - fifo_queue                        = false -> null
+      - id                                = "https://sqs.ap-southeast-2.amazonaws.com/<account-id>/sentinel-alerts" -> null
+      - kms_data_key_reuse_period_seconds = 300 -> null
+      - max_message_size                  = 262144 -> null
+      - message_retention_seconds         = 86400 -> null
+      - name                              = "sentinel-alerts" -> null
+      - receive_wait_time_seconds         = 0 -> null
+      - redrive_policy                    = jsonencode(
+            {
+              - deadLetterTargetArn = "arn:aws:sqs:ap-southeast-2:<account-id>:sentinel-alerts-dlq"
+              - maxReceiveCount     = 3
+            }
+        ) -> null
+      - sqs_managed_sse_enabled           = true -> null
+      - tags                              = {} -> null
+      - tags_all                          = {
+          - "Env"       = "demo"
+          - "Ephemeral" = "true"
+          - "Project"   = "sentinel"
+          - "Stack"     = "demo"
+        } -> null
+      - url                               = "https://sqs.ap-southeast-2.amazonaws.com/<account-id>/sentinel-alerts" -> null
+      - visibility_timeout_seconds        = 30 -> null
+        # (6 unchanged attributes hidden)
+    }
+
+Plan: 0 to add, 0 to change, 36 to destroy.
+
+Changes to Outputs:
+  - alb_dns_name       = "sentinel-alb-1355798403.ap-southeast-2.elb.amazonaws.com" -> null
+  - api_key_secret_arn = "arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J" -> null
+  - dashboard_name     = "sentinel-demo" -> null
+  - queue_url          = "https://sqs.ap-southeast-2.amazonaws.com/<account-id>/sentinel-alerts" -> null
+module.monitoring.aws_cloudwatch_metric_alarm.alb_5xx: Destroying... [id=sentinel-alb-5xx]
+module.network.aws_route_table_association.public[0]: Destroying... [id=rtbassoc-0f26078c8596c84c9]
+module.monitoring.aws_cloudwatch_dashboard.this: Destroying... [id=sentinel-demo]
+module.ecs_service.aws_iam_role_policy.execution_secrets: Destroying... [id=sentinel-ecs-exec:read-secrets]
+module.ecs_service.aws_iam_role_policy.task: Destroying... [id=sentinel-ecs-task:app]
+module.ecs_service.aws_iam_role_policy_attachment.execution: Destroying... [id=sentinel-ecs-exec-20261122053356976200000005]
+module.network.aws_route_table_association.public[1]: Destroying... [id=rtbassoc-03e29344557bb7aff]
+module.monitoring.aws_cloudwatch_metric_alarm.dlq_not_empty: Destroying... [id=sentinel-dlq-not-empty]
+module.ecs_service.aws_iam_role_policy_attachment.execution: Destruction complete after 1s
+module.ecs_service.aws_iam_role_policy.execution_secrets: Destruction complete after 1s
+module.ecs_service.aws_iam_role_policy.task: Destruction complete after 1s
+module.monitoring.aws_cloudwatch_metric_alarm.alb_5xx: Destruction complete after 2s
+module.monitoring.aws_cloudwatch_metric_alarm.dlq_not_empty: Destruction complete after 2s
+module.monitoring.aws_sns_topic.alerts: Destroying... [id=arn:aws:sns:ap-southeast-2:<account-id>:sentinel-alerts]
+module.network.aws_route_table_association.public[1]: Destruction complete after 2s
+module.network.aws_route_table_association.public[0]: Destruction complete after 2s
+module.network.aws_route_table.public: Destroying... [id=rtb-04b4001b72de03b0a]
+module.monitoring.aws_cloudwatch_dashboard.this: Destruction complete after 3s
+module.sqs.aws_sqs_queue.main: Destroying... [id=https://sqs.ap-southeast-2.amazonaws.com/<account-id>/sentinel-alerts]
+module.ecs_service.aws_ecs_service.this: Destroying... [id=arn:aws:ecs:ap-southeast-2:<account-id>:service/sentinel-cluster/sentinel-svc]
+module.monitoring.aws_sns_topic.alerts: Destruction complete after 1s
+module.network.aws_route_table.public: Destruction complete after 2s
+module.network.aws_internet_gateway.this: Destroying... [id=igw-0a57f5f20652d643e]
+module.sqs.aws_sqs_queue.main: Destruction complete after 9s
+module.sqs.aws_sqs_queue.dlq: Destroying... [id=https://sqs.ap-southeast-2.amazonaws.com/<account-id>/sentinel-alerts-dlq]
+module.sqs.aws_sqs_queue.dlq: Destruction complete after 7s
+module.ecs_service.aws_ecs_service.this: Destruction complete after 2m41s
+module.ecs_service.aws_ecs_cluster.this: Destroying... [id=arn:aws:ecs:ap-southeast-2:<account-id>:cluster/sentinel-cluster]
+module.ecs_service.aws_ecs_task_definition.this: Destroying... [id=sentinel]
+module.ecs_service.aws_lb_listener.http: Destroying... [id=arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:listener/app/sentinel-alb/0d362f87da8035ae/9550ee64120d1bab]
+module.ecs_service.aws_ecs_task_definition.this: Destruction complete after 1s
+module.ecs_service.aws_cloudwatch_log_group.this: Destroying... [id=/ecs/sentinel]
+module.ecs_service.aws_iam_role.execution: Destroying... [id=sentinel-ecs-exec]
+module.ecs_service.aws_iam_role.task: Destroying... [id=sentinel-ecs-task]
+module.rds.aws_db_instance.this: Destroying... [id=db-ZQ4UHC36SCZ5FWEWIW5CKVQTTE]
+module.ecs_service.aws_ecs_cluster.this: Destruction complete after 1s
+module.ecs_service.aws_lb_listener.http: Destruction complete after 1s
+module.ecs_service.aws_lb_target_group.this: Destroying... [id=arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:targetgroup/sentinel-tg/cfe9773e2950ffab]
+module.ecs_service.aws_lb.this: Destroying... [id=arn:aws:elasticloadbalancing:ap-southeast-2:<account-id>:loadbalancer/app/sentinel-alb/0d362f87da8035ae]
+module.ecs_service.aws_lb_target_group.this: Destruction complete after 1s
+module.ecs_service.aws_cloudwatch_log_group.this: Destruction complete after 2s
+module.ecs_service.aws_iam_role.task: Destruction complete after 2s
+module.ecs_service.aws_iam_role.execution: Destruction complete after 2s
+module.ecs_service.aws_lb.this: Destruction complete after 13s
+module.network.aws_internet_gateway.this: Destruction complete after 3m11s
+module.rds.aws_db_instance.this: Destruction complete after 1m56s
+module.rds.aws_db_subnet_group.this: Destroying... [id=sentinel-db]
+module.rds.aws_security_group.db: Destroying... [id=sg-0fc98be7b50dd94ac]
+module.rds.aws_db_subnet_group.this: Destruction complete after 1s
+module.network.aws_subnet.public[0]: Destroying... [id=subnet-06321cc19471ab5a1]
+module.network.aws_subnet.public[1]: Destroying... [id=subnet-05f03224188a90c71]
+module.network.aws_subnet.public[0]: Destruction complete after 2s
+module.network.aws_subnet.public[1]: Destruction complete after 2s
+module.rds.aws_security_group.db: Destruction complete after 4s
+module.ecs_service.aws_security_group.ecs: Destroying... [id=sg-0c165fe70ae4d6e34]
+module.ecs_service.aws_security_group.ecs: Destruction complete after 1s
+module.ecs_service.aws_security_group.alb: Destroying... [id=sg-0973ecfbb94179492]
+module.ecs_service.aws_security_group.alb: Destruction complete after 2s
+aws_secretsmanager_secret_version.db_password: Destroying... [id=arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ|terraform-20261122053352982300000003]
+aws_secretsmanager_secret_version.api_key: Destroying... [id=arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J|terraform-20261122053353009700000004]
+module.network.aws_vpc.this: Destroying... [id=vpc-0924fdb01c4645cd0]
+aws_secretsmanager_secret_version.api_key: Destruction complete after 1s
+aws_secretsmanager_secret.api_key: Destroying... [id=arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/api-key-pRRv2J]
+random_password.api_key: Destroying... [id=none]
+random_password.api_key: Destruction complete after 0s
+aws_secretsmanager_secret_version.db_password: Destruction complete after 1s
+module.network.aws_vpc.this: Destruction complete after 1s
+aws_secretsmanager_secret.db_password: Destroying... [id=arn:aws:secretsmanager:ap-southeast-2:<account-id>:secret:sentinel/db-password-tVamiJ]
+random_password.db: Destroying... [id=none]
+random_password.db: Destruction complete after 0s
+aws_secretsmanager_secret.db_password: Destruction complete after 1s
+aws_secretsmanager_secret.api_key: Destruction complete after 2s
+Releasing state lock. This may take a few moments...
+
+Destroy complete! Resources: 36 destroyed.
