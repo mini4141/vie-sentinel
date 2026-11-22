@@ -29,9 +29,9 @@ flowchart LR
 | 3 | SQS with DLQ, same code on LocalStack and AWS | [Alerts.kt](app/src/main/kotlin/dev/sentinel/queue/Alerts.kt), [init script](localstack/init/init-sqs.sh), [sqs module](infra/modules/sqs/main.tf) |
 | 4 | Docker | [Dockerfile](app/Dockerfile) (multi-stage, non-root, healthcheck), [docker-compose.yml](docker-compose.yml) |
 | 5 | CI (GitHub Actions) | [ci.yml](.github/workflows/ci.yml): terraform fmt/validate, detekt, tests, image build, compose smoke test |
-| 6 | Terraform, modular, remote state | [infra/](infra/), [plan on PR](.github/workflows/terraform-plan.yml) |
-| 7 | AWS: VPC, ALB, ECS Fargate, RDS, SQS, ECR, Secrets Manager, CloudWatch, SNS | [plan summary](docs/terraform-plan-demo.txt), [apply log](docs/proof/terraform-apply.txt) |
-| 8 | GitHub OIDC (no static keys) | [oidc module](infra/modules/oidc/main.tf) (CD workflows: see status below) |
+| 6 | Terraform, modular, remote state | [infra/](infra/); `terraform-plan.yml` verified end to end on a PR (closed, not merged), OIDC login, plan posted as a PR comment |
+| 7 | AWS: VPC, ALB, ECS Fargate, RDS, SQS, ECR, Secrets Manager, CloudWatch, SNS | Applied manually from a laptop with the same Terraform: [plan summary](docs/terraform-plan-demo.txt), [apply log](docs/proof/terraform-apply.txt), [destroy log](docs/proof/terraform-destroy.txt) |
+| 8 | GitHub OIDC (no static keys) | [oidc module](infra/modules/oidc/main.tf), used by the PR plan workflow. **CD is manual deploy only**: there is no deploy or destroy workflow |
 | 9 | Observability | JSON logs, Micrometer `/actuator/prometheus`, [dashboard and 2 alarms](infra/modules/monitoring/main.tf) |
 | 10 | Cost discipline | ephemeral stack, [kill timer](scripts/kill-timer.ps1), [teardown check](docs/proof/verify-teardown.txt) |
 | 11 | AI-assisted workflow | [CLAUDE.md](CLAUDE.md), [AI_WORKFLOW.md](docs/AI_WORKFLOW.md) |
@@ -64,7 +64,9 @@ Details and failure handling: [runbook](docs/runbook.md). Decisions: [ADR 0001 S
 - k6, 30s at 5 VUs: 343 requests, 0% failed, p95 499 ms ([k6-aws.txt](docs/proof/k6-aws.txt)).
 - Apply and destroy of 36 resources: [apply](docs/proof/terraform-apply.txt), [destroy](docs/proof/terraform-destroy.txt).
 - Teardown verified clean: [verify-teardown.txt](docs/proof/verify-teardown.txt).
-- Console screenshots (ECS, RDS, CloudWatch): taken during the session; add them under `docs/proof/screenshots/` after redacting the account ID.
+- GitHub Actions: green CI run, [screenshot](docs/proof/screenshots/actions-green.png).
+- Cost Explorer: optional, to be added later once charges post.
+- ECS, RDS and CloudWatch console screenshots were skipped; the saved logs above are the evidence.
 
 ## GCP to AWS mapping
 
@@ -84,9 +86,10 @@ Details and failure handling: [runbook](docs/runbook.md). Decisions: [ADR 0001 S
 
 ## Cost
 
-The demo stack is estimated at about $0.11 per hour (Fargate 0.5 vCPU / 1 GB, `db.t4g.micro`, one ALB). The first session ran about 10 minutes in `ap-southeast-2`, so the expected charge is cents. The permanent bootstrap stack (S3, DynamoDB on-demand, ECR with at most 3 images) costs almost nothing. Cost Explorer screenshot: add after charges post (about a day).
+The demo stack is estimated at about $0.11 per hour (Fargate 0.5 vCPU / 1 GB, `db.t4g.micro`, one ALB). This is an estimate, not a measured figure. The single AWS session lasted well under 1 hour (about 16 minutes from apply start to destroy complete), so the expected charge is cents. The permanent bootstrap stack (S3, DynamoDB on-demand, ECR with at most 3 images) costs almost nothing. The actual total will be confirmed in Cost Explorer.
 
 ## Status
 
-- Phases 1, 2, 4 and 5 are complete and verified. CI (Phase 3) is written; the badge above reflects its real status once GitHub runs it.
-- Phase 6 (`deploy.yml`, `destroy.yml` via OIDC) is not built: the Phase 5 manual session is the evidence for the AWS deploy.
+- CI is green (`ci.yml`, run for `ce738a4`): terraform fmt and validate, detekt, tests, image build, and the compose smoke test.
+- `terraform-plan.yml` is verified end to end on a pull request (PR closed, not merged). It logs in to AWS through GitHub OIDC with no stored keys.
+- CD is not built. AWS deploys were run manually from a laptop with the same Terraform, and `deploy.yml` and `destroy.yml` do not exist.

@@ -15,7 +15,8 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 
 ## Phase 3: CI
 - **Delegated to AI:** `ci.yml` (terraform fmt/validate job, detekt + tests, image build, compose smoke test, report artifacts) and `terraform-plan.yml`.
-- **Not verified:** the workflows have not run on GitHub yet (no remote configured), so the "green on main" gate and the README badge are still open.
+- **Went wrong:** the first four CI runs on GitHub all failed in the build job. Two Windows artefacts: `gradle-wrapper.jar` had never been committed (the `.gitignore` exception `!gradle/wrapper/gradle-wrapper.jar` only matched a root-level folder, while the project lives in `app/`), and `gradlew`, `scripts/smoke-test.sh` and the LocalStack init script were committed without the executable bit (mode 100644). Fixed with `!**/gradle/wrapper/gradle-wrapper.jar` and `git update-index --chmod=+x`. The next run was green. The AI inferred the executable-bit cause because the job logs were not readable; the green run is the evidence.
+- **Verified:** `ci.yml` is green on `main` (run for `ce738a4`). `terraform-plan.yml` was verified end to end on PR #1, which was then closed without merging (see the OIDC section).
 
 ## Phase 4: Terraform
 - **Delegated to AI:** modules (`network`, `ecr`, `rds`, `sqs`, `ecs_service`, `monitoring`, `oidc`), `bootstrap` and `demo` stacks, `verify-teardown.ps1`, `kill-timer.ps1`.
@@ -29,17 +30,21 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 - **Also verified:** `kill-timer.ps1` fired on schedule in a 2-minute dummy run (destroy failed harmlessly because no backend was initialised, then the teardown check ran clean).
 
 ## Phase 5: first AWS session (ap-southeast-2)
-- **Delegated to AI:** image build and push, `terraform apply`/`destroy`, kill timer, proof run, teardown check. The user approved the bootstrap apply and the demo session explicitly and took the console screenshots.
+- **Delegated to AI:** image build and push, `terraform apply`/`destroy`, kill timer, proof run, teardown check. The user approved the bootstrap apply and the demo session explicitly. The console screenshots (ECS, RDS, CloudWatch) were skipped; the saved logs are the evidence. Deploys were run manually from the laptop; there is no CD workflow.
 - **Result:** 36 resources up about 7 minutes after apply started, smoke test PASS on AWS in 21s, k6 343 requests with 0% failures (p95 499ms), destroy of 36 resources, `verify-teardown.ps1` clean. Default sizing was enough, so no escalation ADR.
 - **Went wrong:** `proof-run.ps1` called `bash`, which on this laptop is a WSL stub with no distro, so the smoke step failed locally. Re-ran through Git Bash and pointed the script at it. The corrected script was not re-run end to end.
 
 ## Phase 7: documentation
 - **Delegated to AI:** README (Mermaid diagram, showcase table, GCP-to-AWS mapping), three ADRs, runbook.
 - **Reviewed:** claims were checked against the proof files (21s smoke test, 343 k6 requests, p95 499 ms, 36 resources). Cost is an estimate until Cost Explorer shows the real figure.
-- **Left for the user:** console screenshots, Cost Explorer screenshot, setting the GitHub repo variables, confirming CI is green.
 
 ## OIDC gotcha: immutable subject claims
 - **What went wrong:** the first `terraform-plan` run on a PR failed at `configure-aws-credentials` with `Not authorized to perform sts:AssumeRoleWithWebIdentity`. The role trust policies (written by the AI) matched the classic subject `repo:owner/name:pull_request`, but this repo uses GitHub's immutable subject (`repo:owner@<owner_id>/name@<repo_id>:pull_request`).
 - **How it was found:** the repo variables were correct, so the AI read the live trust policy and ran `gh api repos/<owner>/<repo>/actions/oidc/customization/sub`, which returned `use_immutable_subject: true` and the ID-bearing prefix.
 - **Fix (user-approved, since it changes IAM):** trust conditions now use exact `StringEquals` on `sub` (no wildcards) with `github_owner_id` and `github_repo_id` as module variables. The plan was exactly 2 in-place changes; bootstrap state was backed up outside the repo first (it is local-only). The PR plan run then went green.
 - **Lesson:** check the repo's OIDC subject customization before writing trust policies. Also, the AI had assumed the classic subject format from memory and never tested the login path until a PR existed.
+
+## Timestamp labelling bug
+- **What went wrong:** `verify-teardown.ps1` and `preflight.ps1` printed `Get-Date -Format u`, which formats local time but appends a `Z`. The laptop is at UTC+7, so `docs/proof/verify-teardown.txt` said `12:50:02Z` when the real UTC time was `05:50:02Z`.
+- **How it was found:** a docs audit compared it with the smoke test (`date -u`, 05:42Z) and the destroy completing at 05:49:52Z.
+- **Fix:** both scripts now call `.ToUniversalTime()` first, and the one header line in the proof file was corrected to `05:50:02Z`. The other proof files already used real UTC. `kill-timer.ps1` prints local time and now says so.

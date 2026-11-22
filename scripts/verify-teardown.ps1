@@ -22,7 +22,7 @@ function Check($name, [scriptblock]$query) {
 }
 
 $ident = aws sts get-caller-identity --profile $AwsProfile --query Arn --output text
-Write-Host "verify-teardown $(Get-Date -Format u) region=$Region identity=$($ident -replace ':\d{12}:', ':<account-id>:')"
+Write-Host "verify-teardown $((Get-Date).ToUniversalTime().ToString('u')) region=$Region identity=$($ident -replace ':\d{12}:', ':<account-id>:')"
 
 $common = @('--profile', $AwsProfile, '--region', $Region, '--output', 'text')
 Check 'load balancers'      { aws elbv2 describe-load-balancers @common --query 'LoadBalancers[].LoadBalancerName' }

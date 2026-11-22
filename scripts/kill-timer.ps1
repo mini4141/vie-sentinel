@@ -15,4 +15,4 @@ $when = (Get-Date).AddMinutes($Minutes)
 $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -Command `"$cmd`""
 $trigger = New-ScheduledTaskTrigger -Once -At $when
 Register-ScheduledTask -TaskName 'sentinel-kill-timer' -Action $action -Trigger $trigger -Force | Out-Null
-Write-Host "Kill timer armed: terraform destroy will run at $when ($Minutes min from now)."
+Write-Host "Kill timer armed: terraform destroy will run at $when local time ($Minutes min from now)."

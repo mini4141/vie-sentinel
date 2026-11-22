@@ -38,7 +38,7 @@ $rows = foreach ($c in $checks) {
     [pscustomobject]@{ Service = $c.Service; Result = $(if ($ok) { 'PASS' } else { 'FAIL' }); Detail = $detail }
 }
 
-Write-Host "preflight profile=$AwsProfile region=$Region $(Get-Date -Format u)"
+Write-Host "preflight profile=$AwsProfile region=$Region $((Get-Date).ToUniversalTime().ToString('u'))"
 $rows | Format-Table -AutoSize -Wrap | Out-String -Width 200 | Write-Host
 $failed = @($rows | Where-Object Result -eq 'FAIL').Count
 Write-Host ("RESULT: {0} passed, {1} failed" -f ($rows.Count - $failed), $failed)
