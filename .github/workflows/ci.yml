@@ -8,6 +8,20 @@ permissions:
   contents: read
 
 jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Format check
+        run: terraform fmt -check -recursive infra
+      - name: Validate bootstrap and demo
+        run: |
+          for d in bootstrap demo; do
+            terraform -chdir=infra/$d init -backend=false -input=false
+            terraform -chdir=infra/$d validate
+          done
+
   build:
     runs-on: ubuntu-latest
     steps:

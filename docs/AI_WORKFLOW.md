@@ -12,3 +12,12 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 - **Delegated to AI:** multi-stage Dockerfile, compose with LocalStack, queue/DLQ init script, `scripts/smoke-test.sh`.
 - **Design choice:** one process consumes its own queue (Spring Cloud AWS `@SqsListener`); endpoint and credentials come from standard Spring env vars, so no code differs between LocalStack and AWS.
 - **Added beyond spec:** `PUT /rules/{id}` returns `auditId` so the smoke test can prove the audit row exists without adding an endpoint. `alerts.event_id` is UNIQUE so the consumer is idempotent.
+
+## Phase 3: CI
+- **Delegated to AI:** `ci.yml` (terraform fmt/validate job, detekt + tests, image build, compose smoke test, report artifacts) and `terraform-plan.yml`.
+- **Not verified:** the workflows have not run on GitHub yet (no remote configured), so the "green on main" gate and the README badge are still open.
+
+## Phase 4: Terraform
+- **Delegated to AI:** modules (`network`, `ecr`, `rds`, `sqs`, `ecs_service`, `monitoring`, `oidc`), `bootstrap` and `demo` stacks, `verify-teardown.ps1`, `kill-timer.ps1`.
+- **Reviewed:** plan lists 36 resources and none of the banned types; secrets only via Secrets Manager `valueFrom`; state bucket name is passed at init so no account id is committed.
+- **Went wrong:** an org SCP explicitly denies `ec2:DescribeAvailabilityZones` and `elasticloadbalancing:Describe*` for `sentinel-deployer`. AZ names are now a variable. The ELB denial also breaks `verify-teardown.ps1` and probably ALB management itself; not worked around, escalated to the user.

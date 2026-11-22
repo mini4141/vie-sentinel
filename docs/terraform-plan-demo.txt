@@ -1,0 +1,43 @@
+# terraform plan: infra/demo (plan only, nothing applied)
+# 2026-11-22T04:48:18Z region ap-southeast-1
+Plan: 36 to add, 0 to change, 0 to destroy.
+data.aws_iam_policy_document.task will be read during apply
+(config refers to values not yet known)
+aws_secretsmanager_secret.api_key
+aws_secretsmanager_secret.db_password
+aws_secretsmanager_secret_version.api_key
+aws_secretsmanager_secret_version.db_password
+random_password.api_key
+random_password.db
+module.ecs_service.data.aws_iam_policy_document.ecs_assume will be read during apply
+(depends on a resource or a module with changes pending)
+module.ecs_service.aws_cloudwatch_log_group.this
+module.ecs_service.aws_ecs_cluster.this
+module.ecs_service.aws_ecs_service.this
+module.ecs_service.aws_ecs_task_definition.this
+module.ecs_service.aws_iam_role.execution
+module.ecs_service.aws_iam_role.task
+module.ecs_service.aws_iam_role_policy.execution_secrets
+module.ecs_service.aws_iam_role_policy.task
+module.ecs_service.aws_iam_role_policy_attachment.execution
+module.ecs_service.aws_lb.this
+module.ecs_service.aws_lb_listener.http
+module.ecs_service.aws_lb_target_group.this
+module.ecs_service.aws_security_group.alb
+module.ecs_service.aws_security_group.ecs
+module.monitoring.aws_cloudwatch_dashboard.this
+module.monitoring.aws_cloudwatch_metric_alarm.alb_5xx
+module.monitoring.aws_cloudwatch_metric_alarm.dlq_not_empty
+module.monitoring.aws_sns_topic.alerts
+module.network.aws_internet_gateway.this
+module.network.aws_route_table.public
+module.network.aws_route_table_association.public[0]
+module.network.aws_route_table_association.public[1]
+module.network.aws_subnet.public[0]
+module.network.aws_subnet.public[1]
+module.network.aws_vpc.this
+module.rds.aws_db_instance.this
+module.rds.aws_db_subnet_group.this
+module.rds.aws_security_group.db
+module.sqs.aws_sqs_queue.dlq
+module.sqs.aws_sqs_queue.main
