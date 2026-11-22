@@ -1,0 +1,42 @@
+name: verify-teardown
+
+# Manual, read-only check that nothing billable from the demo stack is left in ap-southeast-2.
+# Creates and deletes nothing. Run it from main (the deploy role trusts only refs/heads/main).
+# Secrets needed: AWS_DEPLOY_ROLE_ARN.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-southeast-2
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          mask-aws-account-id: true
+
+      - name: Teardown check
+        run: |
+          set +e
+          scripts/verify-teardown.sh 2>&1 | tee verify.txt
+          rc=${PIPESTATUS[0]}
+          {
+            echo "### Teardown check"
+            echo '```'
+            cat verify.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$rc"

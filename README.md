@@ -77,7 +77,7 @@ Details and failure handling: [runbook](docs/runbook.md). Decisions: [ADR 0001 S
 3. **smoke**: wait for the ALB health check, run `scripts/smoke-test.sh` against the ALB URL, write the URL and results to the job summary, and upload the proof files as an artifact.
 4. **destroy**: always runs (`if: always()`), even if earlier jobs fail. It runs `terraform destroy`, then `scripts/verify-teardown.sh`, and fails the run if anything is left.
 
-There is no laptop kill timer here: per-job `timeout-minutes` (about 65 minutes in total) and the always-destroy job replace it. A concurrency group allows one deploy at a time. `destroy.yml` is the manual emergency teardown (same destroy and teardown check).
+There is no laptop kill timer here: per-job `timeout-minutes` (about 65 minutes in total) and the always-destroy job replace it. A concurrency group allows one deploy at a time. `destroy.yml` is the manual emergency teardown (same destroy and teardown check). `verify-teardown.yml` is a read-only manual check that nothing is left; the same check runs from a laptop with `scripts/verify-teardown.ps1` or `scripts/verify-teardown.sh`.
 
 Repository **secrets** to set (Settings, Secrets and variables, Actions, Secrets). They are secrets, not variables, so GitHub masks them in the public workflow logs; the role ARNs and the state bucket name contain the AWS account ID:
 

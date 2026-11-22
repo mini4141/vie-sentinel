@@ -28,6 +28,16 @@ Confirm the account ends in `2410` and the user is `sentinel-deployer`. If not, 
 
 Run `deploy` (Actions tab, Run workflow, branch `main`). It builds and pushes the image, applies `infra/demo`, runs the smoke test, then always destroys and runs the teardown check, so no kill timer is needed. Set the repository secrets listed in the README first. If a run is cancelled or hangs, run `destroy` from `main`; if Terraform reports a held state lock, wait for the other run to finish, or `terraform force-unlock <id>` from a laptop after confirming nothing else is running. A red teardown check means resources are left: delete them and re-run `destroy`.
 
+## Verify nothing is left (manual, any time, read-only)
+
+Three equivalent ways; all list load balancers, target groups, RDS instances and snapshots, NAT gateways, Elastic IPs, ECS clusters, ENIs and VPCs tagged `Project=sentinel`, SQS queues and secrets, and print `RESULT: CLEAN` or exit 1:
+
+1. **GitHub:** Actions tab, `verify-teardown`, Run workflow, branch `main`. The result is in the job summary.
+2. **Laptop, PowerShell:** `powershell -File scripts/verify-teardown.ps1` (uses profile `sentinel`).
+3. **Laptop or any Linux shell, bash:** `AWS_PROFILE=sentinel AWS_REGION=ap-southeast-2 scripts/verify-teardown.sh`.
+
+Also look at Billing, Cost Explorer the next day: a clean check and a near-zero daily cost agree.
+
 ## Rollback
 
 There is no blue/green. To roll back a bad image: push the previous image tag, then `terraform apply -var image_tag=<tag>` (the service replaces the task). If the stack itself is bad, destroy it (below) and redeploy.
