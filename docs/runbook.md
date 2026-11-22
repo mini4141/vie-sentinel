@@ -48,3 +48,7 @@ The timer is a Windows scheduled task, so it does not run if the laptop is off o
 4. Run `scripts/verify-teardown.ps1` until it is clean. A session is not finished before that.
 
 Prevent it: keep the laptop awake and plugged in during a session, and confirm `Get-ScheduledTask sentinel-kill-timer` shows the expected next run time.
+
+## Note: GitHub OIDC subject format
+
+This repository uses GitHub's immutable OIDC subject, so tokens carry `repo:mini4141@<owner_id>/vie-sentinel@<repo_id>:<context>`. The IAM trust policies in `infra/modules/oidc` match that exact form (variables `github_owner_id` and `github_repo_id`). If the repo is recreated, renamed or transferred, the IDs change: look them up with `gh api repos/<owner>/<repo> --jq '.owner.id, .id'`, update the variables, and re-apply `infra/bootstrap`. Symptom of a mismatch: `Not authorized to perform sts:AssumeRoleWithWebIdentity` in the workflow log.

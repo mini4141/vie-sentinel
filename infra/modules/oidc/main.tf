@@ -3,12 +3,30 @@ variable "github_repo" {
   description = "GitHub repository as owner/name"
   type        = string
 }
+variable "github_owner_id" {
+  description = "Immutable numeric GitHub owner (user or org) id, from `gh api repos/<owner>/<repo> --jq .owner.id`"
+  type        = string
+  default     = "36650440"
+}
+variable "github_repo_id" {
+  description = "Immutable numeric GitHub repository id, from `gh api repos/<owner>/<repo> --jq .id`"
+  type        = string
+  default     = "1467234840"
+}
 variable "state_bucket_arn" { type = string }
 variable "lock_table_arn" { type = string }
 variable "ecr_repository_arn" { type = string }
 variable "region" { type = string }
 
 data "aws_caller_identity" "current" {}
+
+locals {
+  # This repo uses GitHub's immutable OIDC subject, so the token sub is
+  # repo:<owner>@<owner_id>/<name>@<repo_id>:<context>, not repo:<owner>/<name>:<context>.
+  gh_owner = split("/", var.github_repo)[0]
+  gh_name  = split("/", var.github_repo)[1]
+  sub_base = "repo:${local.gh_owner}@${var.github_owner_id}/${local.gh_name}@${var.github_repo_id}"
+}
 
 resource "aws_iam_openid_connect_provider" "github" {
   url             = "https://token.actions.githubusercontent.com"
@@ -32,7 +50,7 @@ data "aws_iam_policy_document" "deploy_trust" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repo}:ref:refs/heads/main"]
+      values   = ["${local.sub_base}:ref:refs/heads/main"]
     }
   }
 }
@@ -51,11 +69,11 @@ data "aws_iam_policy_document" "plan_trust" {
       values   = ["sts.amazonaws.com"]
     }
     condition {
-      test     = "StringLike"
+      test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:${var.github_repo}:ref:refs/heads/main",
-        "repo:${var.github_repo}:pull_request",
+        "${local.sub_base}:ref:refs/heads/main",
+        "${local.sub_base}:pull_request",
       ]
     }
   }

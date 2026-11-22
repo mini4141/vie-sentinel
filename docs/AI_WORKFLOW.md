@@ -37,3 +37,9 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 - **Delegated to AI:** README (Mermaid diagram, showcase table, GCP-to-AWS mapping), three ADRs, runbook.
 - **Reviewed:** claims were checked against the proof files (21s smoke test, 343 k6 requests, p95 499 ms, 36 resources). Cost is an estimate until Cost Explorer shows the real figure.
 - **Left for the user:** console screenshots, Cost Explorer screenshot, setting the GitHub repo variables, confirming CI is green.
+
+## OIDC gotcha: immutable subject claims
+- **What went wrong:** the first `terraform-plan` run on a PR failed at `configure-aws-credentials` with `Not authorized to perform sts:AssumeRoleWithWebIdentity`. The role trust policies (written by the AI) matched the classic subject `repo:owner/name:pull_request`, but this repo uses GitHub's immutable subject (`repo:owner@<owner_id>/name@<repo_id>:pull_request`).
+- **How it was found:** the repo variables were correct, so the AI read the live trust policy and ran `gh api repos/<owner>/<repo>/actions/oidc/customization/sub`, which returned `use_immutable_subject: true` and the ID-bearing prefix.
+- **Fix (user-approved, since it changes IAM):** trust conditions now use exact `StringEquals` on `sub` (no wildcards) with `github_owner_id` and `github_repo_id` as module variables. The plan was exactly 2 in-place changes; bootstrap state was backed up outside the repo first (it is local-only). The PR plan run then went green.
+- **Lesson:** check the repo's OIDC subject customization before writing trust policies. Also, the AI had assumed the classic subject format from memory and never tested the login path until a PR existed.
