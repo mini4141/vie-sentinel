@@ -52,7 +52,8 @@ How Claude Code was used to build Sentinel. Updated after each phase.
 ## Phase 6: CD workflows
 - **Delegated to AI:** `deploy.yml` (build, deploy, smoke, always-destroy), `destroy.yml`, a reusable `_teardown.yml`, and `scripts/verify-teardown.sh` (a bash port of the PowerShell teardown check using real UTC).
 - **Reviewed:** the deploy role's IAM policy was checked statically against everything `infra/demo` creates and destroys and against the teardown check's read calls. Nothing was found missing; it has not been exercised, because the workflows have not run.
-- **Status:** written and linted with actionlint only. No AWS call was made. Not yet run.
+- **Status:** first real run succeeded: `destroy.yml` on an empty stack (no-op, clean), then `deploy.yml` end to end (run 45003516072: build, deploy, smoke PASS 8/8, always-destroy of 36 resources, teardown check clean, also confirmed clean by a separate local read-only check). Stack uptime about 13 minutes.
+- **Went wrong:** the account ID is readable in that run's public logs: 7 lines in the build job (ECR registry), 14 in deploy and 123 in destroy (Terraform prints resource ARNs). Masking the secrets did not mask the bare account ID, so the earlier claim that logs were safe was wrong for deploy runs. The earlier no-op destroy run had none because nothing existed to print. Left open until the owner decides on masking and on deleting the run.
 
 ### Follow-up: ARNs and bucket moved from variables to secrets
 - **What was wrong:** the workflows read the role ARNs and the state bucket name from repository *variables*. Variables are not masked, and `role-to-assume` is printed in the log of every step, so on this public repo the account ID was readable in the logs of the plan runs.

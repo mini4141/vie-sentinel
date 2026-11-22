@@ -31,7 +31,7 @@ flowchart LR
 | 5 | CI (GitHub Actions) | [ci.yml](.github/workflows/ci.yml): terraform fmt/validate, detekt, tests, image build, compose smoke test |
 | 6 | Terraform, modular, remote state | [infra/](infra/); `terraform-plan.yml` verified end to end on a PR (closed, not merged), OIDC login, plan posted as a PR comment |
 | 7 | AWS: VPC, ALB, ECS Fargate, RDS, SQS, ECR, Secrets Manager, CloudWatch, SNS | Applied manually from a laptop with the same Terraform: [plan summary](docs/terraform-plan-demo.txt), [apply log](docs/proof/terraform-apply.txt), [destroy log](docs/proof/terraform-destroy.txt) |
-| 8 | GitHub OIDC (no static keys) and CD | [oidc module](infra/modules/oidc/main.tf), used by the PR plan workflow (verified). CD: [deploy.yml](.github/workflows/deploy.yml) and [destroy.yml](.github/workflows/destroy.yml) are written but **not yet run**; all AWS deploys so far were manual |
+| 8 | GitHub OIDC (no static keys) and CD | [oidc module](infra/modules/oidc/main.tf), used by the PR plan workflow (verified). CD: [deploy.yml](.github/workflows/deploy.yml) and [destroy.yml](.github/workflows/destroy.yml): one successful run, build, deploy, smoke and destroy all green, [run 45003516072](https://github.com/mini4141/vie-sentinel/actions/runs/45003516072) (OIDC, no stored keys) |
 | 9 | Observability | JSON logs, Micrometer `/actuator/prometheus`, [dashboard and 2 alarms](infra/modules/monitoring/main.tf) |
 | 10 | Cost discipline | ephemeral stack, [kill timer](scripts/kill-timer.ps1), [teardown check](docs/proof/verify-teardown.txt) |
 | 11 | AI-assisted workflow | [CLAUDE.md](CLAUDE.md), [AI_WORKFLOW.md](docs/AI_WORKFLOW.md) |
@@ -68,7 +68,7 @@ Details and failure handling: [runbook](docs/runbook.md). Decisions: [ADR 0001 S
 - Cost Explorer: optional, to be added later once charges post.
 - ECS, RDS and CloudWatch console screenshots were skipped; the saved logs above are the evidence.
 
-## CD workflow (written, not yet run)
+## CD workflow
 
 `deploy.yml` is `workflow_dispatch` only and must be run from `main`, because the deploy role trusts only the `main` ref of this repository through GitHub OIDC (no stored keys). Jobs run in order:
 
@@ -105,10 +105,12 @@ Repository **secrets** to set (Settings, Secrets and variables, Actions, Secrets
 
 ## Cost
 
-The demo stack is estimated at about $0.11 per hour (Fargate 0.5 vCPU / 1 GB, `db.t4g.micro`, one ALB). This is an estimate, not a measured figure. The single AWS session lasted well under 1 hour (about 16 minutes from apply start to destroy complete), so the expected charge is cents. The permanent bootstrap stack (S3, DynamoDB on-demand, ECR with at most 3 images) costs almost nothing. The actual total will be confirmed in Cost Explorer.
+The demo stack is estimated at about $0.11 per hour (Fargate 0.5 vCPU / 1 GB, `db.t4g.micro`, one ALB). This is an estimate, not a measured figure. There were two AWS sessions, both well under 1 hour: the manual one (about 16 minutes from apply start to destroy complete) and the CD run (the stack existed for about 13 minutes), so the expected total is cents. The permanent bootstrap stack (S3, DynamoDB on-demand, ECR with at most 3 images) costs almost nothing. The actual total will be confirmed in Cost Explorer.
 
 ## Status
 
 - CI is green (`ci.yml`, run for `ce738a4`): terraform fmt and validate, detekt, tests, image build, and the compose smoke test.
 - `terraform-plan.yml` is verified end to end on a pull request (PR closed, not merged). It logs in to AWS through GitHub OIDC with no stored keys.
-- CD workflows (`deploy.yml`, `destroy.yml`) are written and linted but have not run yet. AWS deploys so far were run manually from a laptop with the same Terraform. This line changes once a `deploy.yml` run succeeds and ends with a clean destroy.
+- CD is verified: [`deploy.yml` run 45003516072](https://github.com/mini4141/vie-sentinel/actions/runs/45003516072) succeeded end to end from `main` on 2026-11-22 (08:35:20Z to 08:51:03Z, 15 min 43 s). Build 08:35:24Z to 08:37:12Z, deploy 08:37:15Z to 08:43:29Z, smoke 08:43:32Z to 08:44:44Z (PASS, 8 of 8 steps in 10 s), destroy and teardown check 08:44:47Z to 08:51:02Z (clean). The demo stack existed from 08:37:37Z (first resource) to 08:50:41Z (destroy complete), about 13 minutes.
+- `destroy.yml` was run first against an empty stack (run 45003401625): 0 resources destroyed and a clean teardown check, 47 s.
+- Earlier AWS sessions were run manually from a laptop with the same Terraform.
